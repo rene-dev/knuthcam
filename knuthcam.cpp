@@ -131,7 +131,27 @@ int main(int argc, char *argv[]){
         
         glBegin(GL_LINES);
         glColor3f(1, 1, 1);
-        glVertex3f(0, 0, 0); glVertex3f(1, 1, 0);
+    	for(layer_t &l : d.layers){
+    		//cout << "layer " << l.name << endl;
+    		for(cont &c : l.conts){
+    			//cout << " " << "cont" << endl;
+    			for(seg &s1 : c.segments){
+    				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
+                    glVertex3f(s1.start.x/10, s1.start.y/10, 0); glVertex3f(s1.end.x/10, s1.end.y/10, 0);
+    			}
+    		}
+        }
+        glColor3f(1, 0, 0);
+    	for(layer_t &l : d.layers){
+    		//cout << "layer " << l.name << endl;
+    		for(cont &c : l.openconts){
+    			//cout << " " << "cont" << endl;
+    			for(seg &s1 : c.segments){
+    				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
+                    glVertex3f(s1.start.x/10, s1.start.y/10, 0); glVertex3f(s1.end.x/10, s1.end.y/10, 0);
+    			}
+    		}
+        }
         glEnd();
         
         glfwSwapBuffers(window);
