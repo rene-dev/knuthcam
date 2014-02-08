@@ -37,6 +37,7 @@ reportview.xml
 *.o
 sim
 *.dxf
+*.svg
 knuthcam
 
 *~
