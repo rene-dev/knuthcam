@@ -7,6 +7,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
 #include <GLFW/glfw3.h>
 
 #include "importexport.h"
@@ -148,12 +149,13 @@ int main(int argc, char *argv[]){
                         glVertex3f(s.start.x/10, s.start.y/10, 0);
                         glVertex3f(s.end.x/10, s.end.y/10, 0);
                     }else if(s.type == seg::cw || s.type == seg::ccw){
+                        float angle = glm::angle(glm::normalize(s.end-s.mid),glm::normalize(s.start-s.mid));
+                        float step = 2.0f;
                         vec2 arc = s.start;
-                        float step = 1.0f;
                         if(s.type == seg::cw)
                             step*=-1;
                         glVertex3f(s.start.x/10, s.start.y/10, 0);
-                        for(int i = 0; i<90;i+=1){
+                        for(float i = fabs(step); i<angle;i+=fabs(step)){
                             arc = glm::rotate(arc-s.mid,step);
                             arc+=s.mid;
                             glVertex3f(arc.x/10, arc.y/10, 0);
