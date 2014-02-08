@@ -1,7 +1,7 @@
 CC=clang++
 CFLAGS=-g -c -Wall -std=c++11 `pkg-config --cflags --static glfw3`
 LDFLAGS=`pkg-config --static --libs glfw3` -ldxflib
-SOURCES=knuthcam.cpp dxfparser.cpp contour.cpp
+SOURCES=knuthcam.cpp dxfparser.cpp contour.cpp easygl.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=knuthcam
 
