@@ -107,18 +107,24 @@ void displaycontour(cont c){
     }
 }
 
-void offset(layer_t &l){
-    bool right = true;
+void offset(layer_t &l,float r){
     std::vector<cont> newconts;
     for(cont &c : l.conts){
+        if(c.type != cont::ccont)
+            continue;
         cont newcont;
         newcont.type = cont::toolpath;
         for(seg &s : c.segments){
             seg newseg;
             newseg.type = s.type;
-            newseg.start = s.start+normalize(rotate(s.end-s.start, right?-90.0f:90.0f));
-            newseg.end = s.end+normalize(rotate(s.end-s.start, right?-90.0f:90.0f));
-            newseg.mid = s.mid+normalize(rotate(s.end-s.start, right?-90.0f:90.0f));
+            if(s.type == seg::line){
+                newseg.start = s.start+r*normalize(rotate(s.end-s.start, 90.0f));
+                newseg.end = s.end+r*normalize(rotate(s.end-s.start, 90.0f));
+            }else if(s.type == seg::cw || s.type == seg::ccw){
+                newseg.start = s.start+normalize(s.start-s.mid)*(s.type == seg::cw?1.0f:-1.0f)*r;
+                newseg.end = s.end+normalize(s.end-s.mid)*(s.type == seg::cw?1.0f:-1.0f)*r;
+                newseg.mid = s.mid;
+            }
             newcont.segments.push_back(newseg);
         }
         newconts.push_back(newcont);

@@ -105,7 +105,8 @@ int main(int argc, char *argv[]){
     cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
     
     for(layer_t &l : d.layers){
-        offset(l);
+        offset(l,2.0f);
+        offset(l,-1.0f);
     }
     
     double newTime;
