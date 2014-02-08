@@ -82,12 +82,15 @@ void easygl::draw(float period)
 }
 
 void easygl::scroll(double offset){
+    movement.z += offset;
+    /*
     double deltaAperture = offset * -fieldOfView / 200.0;
     fieldOfView += deltaAperture;
     if (fieldOfView < 50) // do not let aperture <= 0.1
         fieldOfView = 50;
     if (fieldOfView > 150) // do not let aperture >= 180
         fieldOfView = 150;
+    */
 }
 
 void easygl::drawBox(GLdouble width, GLdouble height, GLdouble depth)
