@@ -128,7 +128,7 @@ int main(int argc, char *argv[]){
     //renderer.robotState = &renderer.currentPath->pos;
     renderer.init();
 
-	double time;
+	double time = glfwGetTime();
     while (!glfwWindowShouldClose(window))
     {
     	newTime = glfwGetTime();
