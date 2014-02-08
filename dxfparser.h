@@ -9,11 +9,13 @@
 #include <glm/glm.hpp>
 
 #include "knuthcam.h"
+#include "importexport.h"
 
-class DxfParser : public DL_CreationAdapter{
+class DxfParser : public DL_CreationAdapter, importexport{
 	public:
 		drawing_t drawing;
-		int open(string s);
+		int open(string s, drawing_t &d);
+		int save(string s, drawing_t &d);
 	private:
 		DL_Dxf dxf;
 		void processCodeValuePair(unsigned int, char*);
