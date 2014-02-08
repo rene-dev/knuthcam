@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <GLFW/glfw3.h>
 
 #include "importexport.h"
@@ -140,15 +141,31 @@ int main(int argc, char *argv[]){
         glBegin(GL_LINES);
         glColor3f(1, 1, 1);
     	for(layer_t &l : d.layers){
-    		//cout << "layer " << l.name << endl;
     		for(cont &c : l.conts){
-    			//cout << " " << "cont" << endl;
-    			for(seg &s1 : c.segments){
+    			for(seg &s : c.segments){
     				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
-                    glVertex3f(s1.start.x/10, s1.start.y/10, 0); glVertex3f(s1.end.x/10, s1.end.y/10, 0);
+                    if(s.type == seg::line){
+                        glVertex3f(s.start.x/10, s.start.y/10, 0);
+                        glVertex3f(s.end.x/10, s.end.y/10, 0);
+                    }else if(s.type == seg::cw || s.type == seg::ccw){
+                        vec2 arc = s.start;
+                        float step = 1.0f;
+                        if(s.type == seg::cw)
+                            step*=-1;
+                        glVertex3f(s.start.x/10, s.start.y/10, 0);
+                        for(int i = 0; i<90;i+=1){
+                            arc = glm::rotate(arc-s.mid,step);
+                            arc+=s.mid;
+                            glVertex3f(arc.x/10, arc.y/10, 0);
+                            glVertex3f(arc.x/10, arc.y/10, 0);
+                        }
+                        glVertex3f(s.end.x/10, s.end.y/10, 0);
+                    }
     			}
     		}
         }
+        
+        
         glColor3f(1, 0, 0);
     	for(layer_t &l : d.layers){
     		//cout << "layer " << l.name << endl;
