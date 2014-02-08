@@ -91,3 +91,27 @@ void showopen(drawing_t &d){
 		}
 	}
 }
+
+void displaycontour(cont c){
+    for(seg &s : c.segments){
+        //cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
+        if(s.type == seg::line){
+            glVertex3f(s.start.x/10, s.start.y/10, 0);
+            glVertex3f(s.end.x/10, s.end.y/10, 0);
+        }else if(s.type == seg::cw || s.type == seg::ccw){
+            float angle = glm::angle(glm::normalize(s.end-s.mid),glm::normalize(s.start-s.mid));
+            float step = 2.0f;
+            vec2 arc = s.start;
+            if(s.type == seg::cw)
+                step*=-1;
+                glVertex3f(s.start.x/10, s.start.y/10, 0);
+                for(float i = fabs(step); i<angle;i+=fabs(step)){
+                    arc = glm::rotate(arc-s.mid,step);
+                    arc+=s.mid;
+                    glVertex3f(arc.x/10, arc.y/10, 0);
+                    glVertex3f(arc.x/10, arc.y/10, 0);
+                }
+            glVertex3f(s.end.x/10, s.end.y/10, 0);
+        }
+    }
+}

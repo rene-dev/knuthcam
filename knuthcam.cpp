@@ -140,44 +140,15 @@ int main(int argc, char *argv[]){
         renderer.draw(delta);
         
         glBegin(GL_LINES);
-        glColor3f(1, 1, 1);
     	for(layer_t &l : d.layers){
-    		for(cont &c : l.conts){
-    			for(seg &s : c.segments){
-    				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
-                    if(s.type == seg::line){
-                        glVertex3f(s.start.x/10, s.start.y/10, 0);
-                        glVertex3f(s.end.x/10, s.end.y/10, 0);
-                    }else if(s.type == seg::cw || s.type == seg::ccw){
-                        float angle = glm::angle(glm::normalize(s.end-s.mid),glm::normalize(s.start-s.mid));
-                        float step = 2.0f;
-                        vec2 arc = s.start;
-                        if(s.type == seg::cw)
-                            step*=-1;
-                        glVertex3f(s.start.x/10, s.start.y/10, 0);
-                        for(float i = fabs(step); i<angle;i+=fabs(step)){
-                            arc = glm::rotate(arc-s.mid,step);
-                            arc+=s.mid;
-                            glVertex3f(arc.x/10, arc.y/10, 0);
-                            glVertex3f(arc.x/10, arc.y/10, 0);
-                        }
-                        glVertex3f(s.end.x/10, s.end.y/10, 0);
-                    }
-    			}
-    		}
-        }
-        
-        
-        glColor3f(1, 0, 0);
-    	for(layer_t &l : d.layers){
-    		//cout << "layer " << l.name << endl;
-    		for(cont &c : l.openconts){
-    			//cout << " " << "cont" << endl;
-    			for(seg &s1 : c.segments){
-    				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
-                    glVertex3f(s1.start.x/10, s1.start.y/10, 0); glVertex3f(s1.end.x/10, s1.end.y/10, 0);
-    			}
-    		}
+            glColor3f(1, 1, 1);
+            for(cont &c : l.conts){
+                displaycontour(c);
+            }
+            glColor3f(1, 0, 0);
+            for(cont &c : l.openconts){
+                displaycontour(c);
+            }
         }
         glEnd();
         
