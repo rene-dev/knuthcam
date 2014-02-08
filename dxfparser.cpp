@@ -3,8 +3,15 @@
 using std::cout;
 using std::endl;
 
-int DxfParser::open(string s){
+int DxfParser::open(string s, drawing_t &d){
+	drawing = d;
 	return dxf.in(s,this);
+}
+
+
+int DxfParser::save(string s, drawing_t &d){
+	cout << "dxf export not implemented!" << endl;
+	return(0);
 }
 
 void DxfParser::processCodeValuePair(unsigned int i, char* c) {

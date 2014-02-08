@@ -8,7 +8,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 
+#include "importexport.h"
 #include "DxfParser.h"
+#include "svg.h"
 #include "knuthcam.h"
 #include "contour.h"
 #include "easygl.h"
@@ -80,18 +82,19 @@ static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset)
 
 int main(int argc, char *argv[]){
     DxfParser parser;
+    drawing_t d;
     
     if(argc < 2){
         cout << "no file" << endl;
         return 0;
     }
     
-    if(!parser.open(argv[1])){
+    if(!parser.open(argv[1], d)){
         cout << "cannot open file" << endl;
     }
     
-    findcontours(parser.drawing);
-    showclosed(parser.drawing);
+    findcontours(d);
+    showclosed(d);
     
     
     double newTime;

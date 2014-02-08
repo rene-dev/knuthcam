@@ -2,6 +2,7 @@
 #define knuthcam_h
 
 #include <glm/glm.hpp>
+#include <string>
 
 using glm::vec2;
 
@@ -23,7 +24,7 @@ typedef struct{
 }cont;
 
 typedef struct{
-    string name;
+    std::string name;
     cont segments;
     std::vector<cont> conts;
     std::vector<cont> openconts;
@@ -31,7 +32,7 @@ typedef struct{
 
 typedef struct{
     std::vector<layer_t> layers;
-    string name;
+    std::string name;
 }drawing_t;
 
 #endif
