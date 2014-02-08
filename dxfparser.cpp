@@ -5,6 +5,8 @@ using std::endl;
 
 int DxfParser::open(string s, drawing_t &d){
 	drawing = &d;
+    drawing->min = vec2(10,10);
+    drawing->max = vec2(10,10);
 	return dxf.in(s,this);
 }
 
@@ -25,15 +27,26 @@ void DxfParser::addLayer(const DL_LayerData& d) {
 }
 //void DxfParser::addBlock(const DL_BlockData& b) {cout << __func__ << " " << b.name << endl;}
 //void DxfParser::endBlock() {cout << __func__ << endl;}
+
+void DxfParser::minmax (vec2 v){
+    drawing->min.x = fmin(drawing->min.x,v.x);
+    drawing->min.y = fmin(drawing->min.y,v.y);
+    drawing->max.x = fmax(drawing->max.x,v.x);
+    drawing->max.y = fmax(drawing->max.y,v.y);
+}
+
 void DxfParser::addPoint(const DL_PointData&) {cout << __func__ << endl;}
 void DxfParser::addLine(const DL_LineData& d) {
 	//cout << __func__ << endl;
-	DL_Attributes a = getAttributes();
+    DL_Attributes a = getAttributes();
 	string layer = a.getLayer();
 	seg s;
 	s.type = seg::line;
 	s.start = vec2(d.x1,d.y1);
 	s.end = vec2(d.x2,d.y2);
+    //TODO: klappt noch nicht
+    minmax(s.start);
+    minmax(s.end);
 	s.used = false;
 	for(layer_t &l : drawing->layers){
 		if(l.name == layer){
