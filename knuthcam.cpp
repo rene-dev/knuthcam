@@ -104,6 +104,9 @@ int main(int argc, char *argv[]){
     svg_backend.save("test.svg", d);
     cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
     
+    for(layer_t &l : d.layers){
+        offset(l);
+    }
     
     double newTime;
     double delta;
@@ -141,12 +144,20 @@ int main(int argc, char *argv[]){
         
         glBegin(GL_LINES);
     	for(layer_t &l : d.layers){
-            glColor3f(1, 1, 1);
             for(cont &c : l.conts){
-                displaycontour(c);
-            }
-            glColor3f(1, 0, 0);
-            for(cont &c : l.openconts){
+                switch (c.type) {
+                    case cont::toolpath:
+                        glColor3f(0, 1, 0);
+                        break;
+                    case cont::ocont:
+                        glColor3f(1, 0, 0);
+                        break;
+                    case cont::ccont:
+                        glColor3f(1, 1, 1);
+                        break;
+                    default:
+                        break;
+                }
                 displaycontour(c);
             }
         }

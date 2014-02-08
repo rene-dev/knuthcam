@@ -5,6 +5,8 @@ using std::endl;
 using glm::vec2;
 using glm::length;
 using glm::to_string;
+using glm::normalize;
+using glm::rotate;
 
 void findcontours(drawing_t &d){
 	vec2 pos;
@@ -47,9 +49,11 @@ void findcontours(drawing_t &d){
 					}
 				}while(sucess);
 				if(abs(length(c.segments.front().start - c.segments.back().end)) <= tolerance){
+                    c.type = cont::ccont;
 					l.conts.push_back(c);
 				}else{
-					l.openconts.push_back(c);
+                    c.type = cont::ocont;
+					l.conts.push_back(c);
 				}
 			}
 			//cout << to_string(s.start) << to_string(s.end) << endl;
@@ -79,19 +83,6 @@ void showclosed(drawing_t &d){
 	}
 }
 
-void showopen(drawing_t &d){
-	cout << "open" << endl;
-	for(layer_t &l : d.layers){
-		cout << "layer " << l.name << endl;
-		for(cont &c : l.openconts){
-			cout << " " << "cont" << endl;
-			for(seg &s1 : c.segments){
-				cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
-			}
-		}
-	}
-}
-
 void displaycontour(cont c){
     for(seg &s : c.segments){
         //cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
@@ -99,7 +90,7 @@ void displaycontour(cont c){
             glVertex3f(s.start.x/10, s.start.y/10, 0);
             glVertex3f(s.end.x/10, s.end.y/10, 0);
         }else if(s.type == seg::cw || s.type == seg::ccw){
-            float angle = glm::angle(glm::normalize(s.end-s.mid),glm::normalize(s.start-s.mid));
+            float angle = glm::angle(normalize(s.end-s.mid),normalize(s.start-s.mid));
             float step = 2.0f;
             vec2 arc = s.start;
             if(s.type == seg::cw)
@@ -113,5 +104,26 @@ void displaycontour(cont c){
                 }
             glVertex3f(s.end.x/10, s.end.y/10, 0);
         }
+    }
+}
+
+void offset(layer_t &l){
+    bool right = true;
+    std::vector<cont> newconts;
+    for(cont &c : l.conts){
+        cont newcont;
+        newcont.type = cont::toolpath;
+        for(seg &s : c.segments){
+            seg newseg;
+            newseg.type = s.type;
+            newseg.start = s.start+normalize(rotate(s.end-s.start, right?-90.0f:90.0f));
+            newseg.end = s.end+normalize(rotate(s.end-s.start, right?-90.0f:90.0f));
+            newseg.mid = s.mid+normalize(rotate(s.end-s.start, right?-90.0f:90.0f));
+            newcont.segments.push_back(newseg);
+        }
+        newconts.push_back(newcont);
+    }
+    for(cont &c : newconts){
+        l.conts.push_back(c);
     }
 }

@@ -21,13 +21,17 @@ typedef struct{
 
 typedef struct{
     std::vector<seg> segments;
+    enum{
+        ocont,//offene kontur
+        ccont,//geschlossene kontuur
+        toolpath
+    }type;
 }cont;
 
 typedef struct{
     std::string name;
     cont segments;
     std::vector<cont> conts;
-    std::vector<cont> openconts;
 }layer_t;
 
 typedef struct{

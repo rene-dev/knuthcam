@@ -21,5 +21,6 @@ void showopen(drawing_t &d);
 void showclosed(drawing_t &d);
 void showsegments(drawing_t &d);
 void displaycontour(cont c);
+void offset(layer_t &c);
 
 #endif
