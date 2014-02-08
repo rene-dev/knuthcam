@@ -17,11 +17,13 @@
 #include <GL/glext.h>
 #endif
 
+#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <math.h>
 
 class easygl
@@ -46,7 +48,7 @@ public:
     void scroll(double);
 
 private:
-    const float speed = 5.0f; // movement speed
+    const float speed = 1.0f; // movement speed
 
 	void drawBox(GLdouble width, GLdouble height, GLdouble depth);
 	void drawPath();

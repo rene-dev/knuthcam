@@ -8,6 +8,10 @@
 
 #include "easygl.h"
 
+using std::cout;
+using std::endl;
+using glm::to_string;
+
 easygl::easygl()
 {
 }
@@ -18,7 +22,6 @@ easygl::~easygl()
 
 void easygl::init()
 {
-    position = glm::vec3(0.0f, 1.0f, 5.0f);
     target = glm::vec3(0, 1, 0);
     up = glm::vec3(0, 1, 0);
     orientation = glm::quat();
@@ -38,12 +41,13 @@ void easygl::init()
 void easygl::draw(float period)
 {
     // update camera
-    glm::vec3 direction = glm::rotate(orientation, glm::vec3(0, 0, -1));
+    //glm::vec3 direction = glm::rotate(orientation, glm::vec3(0, 0, -1));
+    //glm::vec3 direction = glm::rotate(glm::quat(0,0,0,0), glm::vec3(0, 0, -1));
+    glm::vec3 direction = glm::vec3(0, 0, -1);
     glm::vec3 right = glm::cross(up, direction);
     glm::vec3 up = glm::cross(direction, right);
-    position -= (movement.z * direction + movement.x * right + movement.y * up) * speed * (float)period;
+    position = glm::vec3(5.0f, 5.0f, 5.0f) + (movement.z * direction + movement.x/50 * right + movement.y/50 * up);
     target = position + direction;
-    
     
 	glViewport(0, 0, viewportSize.x, viewportSize.y);
 	if(viewportSize.y == 0)

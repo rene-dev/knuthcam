@@ -18,6 +18,7 @@
 using std::cout;
 using std::endl;
 using glm::length;
+using glm::to_string;
 
 const float sensitivity = 0.01f; // mouse sensitivity
 
@@ -50,9 +51,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	else if(key == GLFW_KEY_E)
 		e = action == GLFW_PRESS ? true : false;
 
-	renderer.movement.x = d - a;
-	renderer.movement.y = q - e;
-	renderer.movement.z = s - w;
+	//renderer.movement.x = d - a;
+	//renderer.movement.y = q - e;
+	//renderer.movement.z = s - w;
 }
 
 static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
@@ -69,7 +70,9 @@ static void mousepos_callback(GLFWwindow* window, double xpos, double ypos)
 	if(drag)
 	{
 		glm::ivec2 diff = lastMouse - mouse;
-		renderer.orientation = renderer.orientation * glm::quat(glm::vec3(diff.y, diff.x, 0) * sensitivity);
+		//renderer.orientation = renderer.orientation * glm::quat(glm::vec3(diff.y, diff.x, 0) * sensitivity);
+    	renderer.movement -= glm::vec3(diff,0);//
+        
 	}
 	lastMouse = mouse;
 }
@@ -97,6 +100,7 @@ int main(int argc, char *argv[]){
     findcontours(d);
     showclosed(d);
     svg_backend.save("test.svg", d);
+    cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
     
     
     double newTime;

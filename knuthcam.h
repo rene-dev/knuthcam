@@ -33,6 +33,8 @@ typedef struct{
 typedef struct{
     std::vector<layer_t> layers;
     std::string name;
+    vec2 min;
+    vec2 max;
 }drawing_t;
 
 #endif

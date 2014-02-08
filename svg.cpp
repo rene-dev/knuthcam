@@ -43,7 +43,7 @@ int svg::save(string s, drawing_t &d){
 		}
 	}
 	
-		for(layer_t &l : d.layers){
+	for(layer_t &l : d.layers){
 		//cout << "layer " << l.name << endl;
 		for(cont &c : l.openconts){
 			//cout << " " << "cont" << endl;
