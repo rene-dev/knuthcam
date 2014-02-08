@@ -13,6 +13,7 @@
 #include "svg.h"
 #include "knuthcam.h"
 #include "contour.h"
+#include "easygl.h"
 
 using std::cout;
 using std::endl;
@@ -23,6 +24,7 @@ const float sensitivity = 0.01f; // mouse sensitivity
 bool w = false, s = false, a = false, d = false, q = false, e = false;
 int drag;
 glm::ivec2 mouse, lastMouse;
+easygl renderer;
 
 static void error_callback(int error, const char* description)
 {
@@ -48,9 +50,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 	else if(key == GLFW_KEY_E)
 		e = action == GLFW_PRESS ? true : false;
 
-	//renderer.movement.x = d - a;
-	//renderer.movement.y = q - e;
-	//renderer.movement.z = s - w;
+	renderer.movement.x = d - a;
+	renderer.movement.y = q - e;
+	renderer.movement.z = s - w;
 }
 
 static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
@@ -67,14 +69,14 @@ static void mousepos_callback(GLFWwindow* window, double xpos, double ypos)
 	if(drag)
 	{
 		glm::ivec2 diff = lastMouse - mouse;
-		//renderer.orientation = renderer.orientation * glm::quat(glm::vec3(diff.y, diff.x, 0) * sensitivity);
+		renderer.orientation = renderer.orientation * glm::quat(glm::vec3(diff.y, diff.x, 0) * sensitivity);
 	}
 	lastMouse = mouse;
 }
 
 static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset)
 {
-    //renderer.scroll(yoffset);
+    renderer.scroll(yoffset);
 }
 
 int main(int argc, char *argv[]){
@@ -118,7 +120,7 @@ int main(int argc, char *argv[]){
     //renderer.currentPath = gcode("gcode.ngc");
     //interpol(renderer.currentPath);
     //renderer.robotState = &renderer.currentPath->pos;
-    //renderer.init();
+    renderer.init();
 
 	double time;
     while (!glfwWindowShouldClose(window))
@@ -127,8 +129,35 @@ int main(int argc, char *argv[]){
     	delta = newTime - time;
     	time = newTime;
         
-        //glfwGetFramebufferSize(window, &renderer.viewportSize.x, &renderer.viewportSize.y);
-        //renderer.draw(delta);
+
+        glfwGetFramebufferSize(window, &renderer.viewportSize.x, &renderer.viewportSize.y);
+        renderer.draw(delta);
+        
+        glBegin(GL_LINES);
+        glColor3f(1, 1, 1);
+    	for(layer_t &l : d.layers){
+    		//cout << "layer " << l.name << endl;
+    		for(cont &c : l.conts){
+    			//cout << " " << "cont" << endl;
+    			for(seg &s1 : c.segments){
+    				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
+                    glVertex3f(s1.start.x/10, s1.start.y/10, 0); glVertex3f(s1.end.x/10, s1.end.y/10, 0);
+    			}
+    		}
+        }
+        glColor3f(1, 0, 0);
+    	for(layer_t &l : d.layers){
+    		//cout << "layer " << l.name << endl;
+    		for(cont &c : l.openconts){
+    			//cout << " " << "cont" << endl;
+    			for(seg &s1 : c.segments){
+    				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
+                    glVertex3f(s1.start.x/10, s1.start.y/10, 0); glVertex3f(s1.end.x/10, s1.end.y/10, 0);
+    			}
+    		}
+        }
+        glEnd();
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
