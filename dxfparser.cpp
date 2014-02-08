@@ -4,7 +4,7 @@ using std::cout;
 using std::endl;
 
 int DxfParser::open(string s, drawing_t &d){
-	drawing = d;
+	drawing = &d;
 	return dxf.in(s,this);
 }
 
@@ -21,7 +21,7 @@ void DxfParser::addLayer(const DL_LayerData& d) {
 	//cout << __func__ << " " << d.name << endl;
 	layer_t l;
 	l.name = d.name;
-	drawing.layers.push_back(l);
+	drawing->layers.push_back(l);
 }
 //void DxfParser::addBlock(const DL_BlockData& b) {cout << __func__ << " " << b.name << endl;}
 //void DxfParser::endBlock() {cout << __func__ << endl;}
@@ -35,7 +35,7 @@ void DxfParser::addLine(const DL_LineData& d) {
 	s.start = vec2(d.x1,d.y1);
 	s.end = vec2(d.x2,d.y2);
 	s.used = false;
-	for(layer_t &l : drawing.layers){
+	for(layer_t &l : drawing->layers){
 		if(l.name == layer){
 			l.segments.segments.push_back(s);
 			return;
@@ -65,7 +65,7 @@ void DxfParser::addArc(const DL_ArcData& d) {
 
 	s.used = false;
 
-	for(layer_t &l : drawing.layers){
+	for(layer_t &l : drawing->layers){
 		if(l.name == layer){
 			l.segments.segments.push_back(s);
 			return;

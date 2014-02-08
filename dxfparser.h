@@ -13,7 +13,7 @@
 
 class DxfParser : public DL_CreationAdapter, importexport{
 	public:
-		drawing_t drawing;
+		drawing_t *drawing;
 		int open(string s, drawing_t &d);
 		int save(string s, drawing_t &d);
 	private:
