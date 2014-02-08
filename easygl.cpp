@@ -69,7 +69,7 @@ void easygl::draw(float period)
 	glLightfv(GL_LIGHT0, GL_SPECULAR, glm::value_ptr(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)));
 
 	// scene
-    drawGrid();
+    //drawGrid();
     //drawRobot();
     drawAxis();
     //drawPath();

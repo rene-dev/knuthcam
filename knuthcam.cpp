@@ -129,6 +129,12 @@ int main(int argc, char *argv[]){
         
         glfwGetFramebufferSize(window, &renderer.viewportSize.x, &renderer.viewportSize.y);
         renderer.draw(delta);
+        
+        glBegin(GL_LINES);
+        glColor3f(1, 1, 1);
+        glVertex3f(0, 0, 0); glVertex3f(1, 1, 0);
+        glEnd();
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
