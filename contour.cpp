@@ -95,6 +95,18 @@ float angle(glm::vec2 v){
     return fmodf(a, 360.0f);
 }
 
+bool turn(cont c){
+    float sum = 0;
+    seg tmp;
+    tmp.start = c.segments.front().start;
+    tmp.end = c.segments.front().end;
+    for(seg &s : c.segments){
+        sum += angle(s.end-s.start,tmp.end-tmp.start)-180;
+        tmp = s;
+    }
+    return sum<0?true:false;
+}
+
 void displaycontour(cont c){
     for(seg &s : c.segments){
         //cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;

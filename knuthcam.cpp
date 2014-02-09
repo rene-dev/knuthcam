@@ -105,6 +105,17 @@ int main(int argc, char *argv[]){
     cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
     
     for(layer_t &l : d.layers){
+        for(cont &c : l.conts){
+            if(turn(c)){
+                for(seg &s : c.segments){
+                    vec2 t = s.start;
+                    s.start = s.end;
+                    s.end = t;
+                    if(s.type != seg::line)
+                        s.type = s.type == seg::cw?seg::ccw:seg::cw;
+                }
+            }
+        }
         offset(l,1.0f);
         //offset(l,-1.0f);
     }
