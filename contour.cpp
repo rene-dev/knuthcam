@@ -83,6 +83,18 @@ void showclosed(drawing_t &d){
 	}
 }
 
+float angle(glm::vec2 v1, glm::vec2 v2){
+    float a = atan2(v1.y, v1.x)/M_PI*180.0f;
+    float b = atan2(v2.y, v2.x)/M_PI*180.0f;
+    float c = fmodf(360.0f-(b-a), 360.0f);
+    return c;
+}
+
+float angle(glm::vec2 v){
+    float a = atan2(v.y, v.x)/M_PI*180.0f;
+    return fmodf(a, 360.0f);
+}
+
 void displaycontour(cont c){
     for(seg &s : c.segments){
         //cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
@@ -90,21 +102,38 @@ void displaycontour(cont c){
             glVertex3f(s.start.x/10, s.start.y/10, 0);
             glVertex3f(s.end.x/10, s.end.y/10, 0);
         }else if(s.type == seg::cw || s.type == seg::ccw){
-            float angle = glm::angle(normalize(s.end-s.mid),normalize(s.start-s.mid));
-            float step = 2.0f;
+            glVertex3f(s.start.x/10, s.start.y/10, 0);
+            float a = angle(s.end-s.mid,s.start-s.mid);
+            float step = 1.0f;
             vec2 arc = s.start;
-            if(s.type == seg::cw)
+            if(s.type == seg::cw){
                 step*=-1;
-                glVertex3f(s.start.x/10, s.start.y/10, 0);
-                for(float i = fabs(step); i<angle;i+=fabs(step)){
-                    arc = glm::rotate(arc-s.mid,step);
-                    arc+=s.mid;
-                    glVertex3f(arc.x/10, arc.y/10, 0);
-                    glVertex3f(arc.x/10, arc.y/10, 0);
-                }
+                a = 360-a;
+            }
+            for(float i = fabs(step); i<a;i+=fabs(step)){
+                arc = glm::rotate(arc-s.mid,step);
+                arc+=s.mid;
+                glVertex3f(arc.x/10, arc.y/10, 0);
+                glVertex3f(arc.x/10, arc.y/10, 0);
+            }
             glVertex3f(s.end.x/10, s.end.y/10, 0);
         }
     }
+}
+
+void join(seg &s1, seg &s2,cont &c,vec2 v){
+    float a = angle(s2.end-s2.start,s1.end-s1.start);
+    if(s1.end == s2.start){
+        cout << "passt!" << a << endl;
+    }else{
+        cout << "arc einfügen:" << a << endl;
+        seg newseg;
+        newseg.type = seg::line;//cw ccw entscheiden
+        newseg.start = s1.end;
+        newseg.end = s2.start;
+        newseg.mid = v;
+        //c.segments.push_back(newseg);
+    }//clippen
 }
 
 void offset(layer_t &l,float r){
@@ -116,6 +145,7 @@ void offset(layer_t &l,float r){
         newcont.type = cont::toolpath;
         for(seg &s : c.segments){
             seg newseg;
+            seg newarc;
             newseg.type = s.type;
             if(s.type == seg::line){
                 newseg.start = s.start+r*normalize(rotate(s.end-s.start, 90.0f));
@@ -125,8 +155,20 @@ void offset(layer_t &l,float r){
                 newseg.end = s.end+normalize(s.end-s.mid)*(s.type == seg::cw?1.0f:-1.0f)*r;
                 newseg.mid = s.mid;
             }
+            if(!newcont.segments.empty()){
+                seg last = newcont.segments.back();
+                join(last, newseg, newcont, s.start);
+            }
+
             newcont.segments.push_back(newseg);
         }
+        if(!newcont.segments.empty()){
+            seg last = newcont.segments.back();
+            seg first = newcont.segments.front();
+            join(last, first, newcont, c.segments.back().start);
+        }
+        
+        //TODO: check closed
         newconts.push_back(newcont);
     }
     for(cont &c : newconts){

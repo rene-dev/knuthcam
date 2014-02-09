@@ -22,5 +22,9 @@ void showclosed(drawing_t &d);
 void showsegments(drawing_t &d);
 void displaycontour(cont c);
 void offset(layer_t &c,float);
+void join(seg &s1, seg &s2,cont &c,glm::vec2);
+float angle(glm::vec2,glm::vec2);
+float angle(glm::vec2 a, glm::vec2 b);
+float angle(glm::vec2 a);
 
 #endif

@@ -73,7 +73,7 @@ static void mousepos_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		glm::ivec2 diff = lastMouse - mouse;
 		//renderer.orientation = renderer.orientation * glm::quat(glm::vec3(diff.y, diff.x, 0) * sensitivity);
-    	renderer.movement -= glm::vec3(diff,0);//
+    	renderer.movement -= glm::vec3(diff,0);
         
 	}
 	lastMouse = mouse;
@@ -105,8 +105,8 @@ int main(int argc, char *argv[]){
     cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
     
     for(layer_t &l : d.layers){
-        offset(l,2.0f);
-        offset(l,-1.0f);
+        offset(l,1.0f);
+        //offset(l,-1.0f);
     }
     
     double newTime;
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]){
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(EXIT_FAILURE);
-    window = glfwCreateWindow(640, 480, "KinSim", NULL, NULL);
+    window = glfwCreateWindow(640, 480, "KnuthCAM", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
