@@ -144,7 +144,7 @@ void join(seg &s1, seg &s2,cont &c,vec2 v){
         newseg.start = s1.end;
         newseg.end = s2.start;
         newseg.mid = v;
-        //c.segments.push_back(newseg);
+        c.segments.push_back(newseg);
     }//clippen
 }
 

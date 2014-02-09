@@ -19,6 +19,7 @@
 
 using std::cout;
 using std::endl;
+using std::reverse;
 using glm::length;
 using glm::to_string;
 
@@ -111,9 +112,10 @@ int main(int argc, char *argv[]){
                     vec2 t = s.start;
                     s.start = s.end;
                     s.end = t;
-                    if(s.type != seg::line)
+                    if(s.type == seg::cw || s.type == seg::ccw)
                         s.type = s.type == seg::cw?seg::ccw:seg::cw;
                 }
+                reverse(c.segments.begin(), c.segments.end());
             }
         }
         offset(l,1.0f);
