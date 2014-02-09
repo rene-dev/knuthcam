@@ -87,12 +87,17 @@ float angle(glm::vec2 v1, glm::vec2 v2){
     float a = atan2(v1.y, v1.x)/M_PI*180.0f;
     float b = atan2(v2.y, v2.x)/M_PI*180.0f;
     float c = fmodf(360.0f-(b-a), 360.0f);
+    if(c<0)
+        c+=360;
     return c;
 }
 
 float angle(glm::vec2 v){
     float a = atan2(v.y, v.x)/M_PI*180.0f;
-    return fmodf(a, 360.0f);
+    float foo = fmodf(a, 360.0f);
+    if(foo<0)
+        foo+=360;
+    return foo;
 }
 
 bool turn(cont c){
@@ -133,19 +138,34 @@ void displaycontour(cont c){
     }
 }
 
+glm::vec2 tangent(seg s){
+    vec2 v;
+    if(s.type == seg::cw)
+        v = glm::rotate(s.mid-s.start,90.0f);
+    if(s.type == seg::ccw)
+        v = glm::rotate(s.mid-s.start,-90.0f);
+    if(s.type == seg::line)
+        v = s.end-s.start;
+    return glm::normalize(v);
+}
+
 void join(seg &s1, seg &s2,cont &c,vec2 v){
-    float a = angle(s2.end-s2.start,s1.end-s1.start);
+    float a = angle(tangent(s2),tangent(s1));
     if(s1.end == s2.start){
         cout << "passt!" << a << endl;
-    }else{
+    }else if(a >= 180){
         cout << "arc einfügen:" << a << endl;
         seg newseg;
-        newseg.type = seg::line;//cw ccw entscheiden
+        newseg.type = seg::cw;
         newseg.start = s1.end;
         newseg.end = s2.start;
         newseg.mid = v;
         c.segments.push_back(newseg);
-    }//clippen
+    }else{
+        //s1.end = s1.start;
+        //s2.end = s2.start;
+        cout << "clippen: " << a << endl;
+    }
 }
 
 void offset(layer_t &l,float r){
