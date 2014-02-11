@@ -103,13 +103,14 @@ float angle(glm::vec2 v){
 bool turn(cont c){
     float sum = 0;
     seg tmp;
-    tmp.start = c.segments.front().start;
-    tmp.end = c.segments.front().end;
+    tmp.start = c.segments.back().start;
+    tmp.end = c.segments.back().end;
     for(seg &s : c.segments){
-        sum += angle(s.end-s.start,tmp.end-tmp.start)-180;
+        sum += angle(s.end-s.start,tmp.start-tmp.end)-180;
+        cout << angle(s.end-s.start,tmp.start-tmp.end)-180 << endl;
         tmp = s;
     }
-    return sum<0?true:false;
+    return sum<0?false:true;
 }
 
 void displaycontour(cont c){
