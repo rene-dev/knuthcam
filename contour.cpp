@@ -139,24 +139,24 @@ void displaycontour(cont c){
 }
 
 void join(seg &s1, seg &s2,cont &c,vec2 v,float r){
-    float a = angle(s1.end-v,s2.start-v);
+    float a;
     if(s1.end == s2.start){
-        if(a == 0)
-            cout << "passt!" << endl;
-        else
-            cout << "passt, bei winkel " << a << "bug?" << endl;
-    }else if(r>0?a < 180:a > 180){
-        cout << "arc einfügen:" << a << endl;
-        seg newseg;
-        newseg.type = r>0?seg::cw:seg::ccw;
-        newseg.start = s1.end;
-        newseg.end = s2.start;
-        newseg.mid = v;
-        c.segments.push_back(newseg);
+        cout << "passt!" << endl;
     }else{
-        //s1.end = s1.start;
-        //s2.end = s2.start;
-        cout << "clippen: " << a << endl;
+        a = angle(s1.end-v,s2.start-v);
+        if(r>0?a < 180:a > 180){
+            cout << "arc einfügen:" << a << endl;
+            seg newseg;
+            newseg.type = r>0?seg::cw:seg::ccw;
+            newseg.start = s1.end;
+            newseg.end = s2.start;
+            newseg.mid = v;
+            c.segments.push_back(newseg);
+        }else{
+            //s1.end = s1.start;
+            //s2.end = s2.start;
+            cout << "clippen: " << a << endl;
+        }
     }
 }
 
@@ -169,7 +169,6 @@ void offset(layer_t &l,float r){
         newcont.type = cont::toolpath;
         for(seg &s : c.segments){
             seg newseg;
-            seg newarc;
             newseg.type = s.type;
             if(s.type == seg::line){
                 newseg.start = s.start+r*normalize(rotate(s.end-s.start, 90.0f));
