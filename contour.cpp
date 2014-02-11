@@ -138,25 +138,17 @@ void displaycontour(cont c){
     }
 }
 
-glm::vec2 tangent(seg s){
-    vec2 v;
-    if(s.type == seg::cw)
-        v = glm::rotate(s.mid-s.start,90.0f);
-    if(s.type == seg::ccw)
-        v = glm::rotate(s.mid-s.start,-90.0f);
-    if(s.type == seg::line)
-        v = s.end-s.start;
-    return glm::normalize(v);
-}
-
-void join(seg &s1, seg &s2,cont &c,vec2 v){
-    float a = angle(tangent(s2),tangent(s1));
+void join(seg &s1, seg &s2,cont &c,vec2 v,float r){
+    float a = angle(s1.end-v,s2.start-v);
     if(s1.end == s2.start){
-        cout << "passt!" << a << endl;
-    }else if(a >= 180){
+        if(a == 0)
+            cout << "passt!" << endl;
+        else
+            cout << "passt, bei winkel " << a << "bug?" << endl;
+    }else if(r>0?a < 180:a > 180){
         cout << "arc einfügen:" << a << endl;
         seg newseg;
-        newseg.type = seg::cw;
+        newseg.type = r>0?seg::cw:seg::ccw;
         newseg.start = s1.end;
         newseg.end = s2.start;
         newseg.mid = v;
@@ -189,7 +181,7 @@ void offset(layer_t &l,float r){
             }
             if(!newcont.segments.empty()){
                 seg last = newcont.segments.back();
-                join(last, newseg, newcont, s.start);
+                join(last, newseg, newcont, s.start,r);
             }
 
             newcont.segments.push_back(newseg);
@@ -197,7 +189,7 @@ void offset(layer_t &l,float r){
         if(!newcont.segments.empty()){
             seg last = newcont.segments.back();
             seg first = newcont.segments.front();
-            join(last, first, newcont, c.segments.back().start);
+            join(last, first, newcont, c.segments.back().end,r);
         }
         
         //TODO: check closed
