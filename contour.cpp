@@ -234,6 +234,14 @@ void trim(cont_t &c1){
 	}
 }
 
+bool concave(seg_t s1, seg_t s2){
+	float a = angle(s1.end-s1.start,s2.end-s2.start);
+	if(a > 0 && a < 180){
+		return(true);
+	}
+	return(false)
+}
+
 void offset(layer_t &l,float r){
     std::vector<cont_t> newconts;
     for(cont_t &c : l.conts){
@@ -265,7 +273,7 @@ void offset(layer_t &l,float r){
             join(last, first, newcont, c.segments.back().end,r);
             cont_t newcont2;
             newcont2.type = cont_t::toolpath;
-            trim(newcont);
+            //trim(newcont);
 	        //TODO: check closed
             newconts.push_back(newcont);
         }
