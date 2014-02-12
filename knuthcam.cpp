@@ -126,7 +126,7 @@ int main(int argc, char *argv[]){
     cout << "minmax" << to_string(d.min) << " " << to_string(d.max) << endl;
     
     for(layer_t &l : d.layers){
-        offset(l,-1.0f);
+        offset(l,1.0f);
         //offset(l,-1.0f);
     }
     
