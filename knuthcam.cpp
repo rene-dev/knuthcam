@@ -120,7 +120,7 @@ int main(int argc, char *argv[]){
         cout << "cannot open file" << endl;
     }
     
-    findcont_tours(d);
+    findcontours(d);
     showclosed(d);
     svg_backend.save("test.svg", d);
     cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
@@ -200,7 +200,7 @@ int main(int argc, char *argv[]){
                     default:
                         break;
                 }
-                displaycont_tour(c);
+                displaycontour(c);
             }
         }
         glEnd();

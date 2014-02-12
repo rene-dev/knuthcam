@@ -1,5 +1,5 @@
-#ifndef cont_tour_h
-#define cont_tour_h
+#ifndef contour_h
+#define contour_h
 
 #include <iostream>
 #include <string>
@@ -16,11 +16,11 @@
 
 #include "knuthcam.hpp"
 
-void findcont_tours(drawing_t &d);
+void findcontours(drawing_t &d);
 void showopen(drawing_t &d);
 void showclosed(drawing_t &d);
-void showseg_tments(drawing_t &d);
-void displaycont_tour(cont_t c);
+void showsegments(drawing_t &d);
+void displaycontour(cont_t c);
 void offset(layer_t &c,float);
 void join(seg_t &s1, seg_t &s2,cont_t &c,glm::vec2,float);
 float angle(glm::vec2,glm::vec2);

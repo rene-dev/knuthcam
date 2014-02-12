@@ -8,7 +8,7 @@ using glm::to_string;
 using glm::normalize;
 using glm::rotate;
 
-void findcont_tours(drawing_t &d){
+void findcontours(drawing_t &d){
 	vec2 pos;
 	bool sucess = false;
 	double tolerance = 0.01; // konturfehler
@@ -61,7 +61,7 @@ void findcont_tours(drawing_t &d){
 	}
 }
 
-void showseg_tments(drawing_t &d){
+void showsegments(drawing_t &d){
 	for(layer_t &l : d.layers){
 		cout << "layer " << l.name << endl;
 		for(seg_t &s1 : l.seg_tments.segments){
@@ -112,7 +112,7 @@ bool turn(cont_t c){
     return sum<0?false:true;
 }
 
-void displaycont_tour(cont_t c){
+void displaycontour(cont_t c){
     for(seg_t &s : c.segments){
         //cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
         if(s.type == seg_t::line){
