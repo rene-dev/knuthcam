@@ -95,6 +95,43 @@ void showclosed(drawing_t &d){
 	}
 }
 
+bool intersec(seg_t s1, seg_t s2, float &p, float &t){
+	if(s1.type == seg_t::line && s2.type == seg_t::line){// line, line
+		float xy, ab;
+		bool partial = false;
+		double denom = (s2.end.x - s2.end.y) * (s1.start.x - s1.start.y) - (s1.end.x - s1.end.y) * (s2.start.x - s2.start.y);
+		if (denom == 0) {
+			xy = -1;
+			ab = -1;
+		} else {
+			xy = (s2.start.x * (s1.end.y - s2.end.y) + s2.start.y * (s2.end.x - s1.end.y) + s1.start.y * (s2.end.y - s2.end.x)) / denom;
+			partial = xy >= 0 && xy <= 1;
+			if (partial) {
+				// no point calculating this unless xy is between 0 & 1
+				ab = (s1.end.y * (s1.start.x - s2.start.y) + s2.end.y * (s1.start.y - s1.start.x) + s1.end.x * (s2.start.y - s1.start.y)) / denom; 
+			}
+		}
+		if ( partial && (ab >= 0 && ab) <= 1) {
+			ab = 1-ab;
+			xy = 1-xy;
+			p = xy;
+			t = ab;
+			return true;
+		} 
+		return false; 	
+	}
+	else if(s1.type != seg_t::line && s2.type != seg_t::line){// arc, arc
+	
+	}
+	else if(s1.type != seg_t::line){// arc, line 
+		
+	}
+	else{// arc, line
+	
+	}
+	return(false);
+}
+
 float angle(glm::vec2 v1, glm::vec2 v2){
     float a = atan2(v1.y, v1.x)/M_PI*180.0f;
     float b = atan2(v2.y, v2.x)/M_PI*180.0f;
@@ -172,13 +209,29 @@ void join(seg_t &s1, seg_t &s2,cont_t &c,vec2 v,float r){
     }
 }
 
+void trim(cont_t &c1){
+	float p;
+	float t;
+	for(seg_t &s1 : c1.segments){
+		for(seg_t &s2 : c1.segments){
+			if(!(s1.start == s2.start && s1.end == s2.end)){
+				if(intersec(s1, s2, p, t)){
+					cout << "trim p:" << p << " t:" << t << endl;
+					s1.end = s1.start + p * (s1.end - s1.start);
+					s2.start = s2.start + t * (s2.end - s2.start);
+				}
+			}
+		}
+	}
+}
+
 void offset(layer_t &l,float r){
-    std::vector<cont_t> newcont_ts;
+    std::vector<cont_t> newconts;
     for(cont_t &c : l.conts){
         if(c.type != cont_t::ccont_t)
             continue;
-        cont_t newcont_t;
-        newcont_t.type = cont_t::toolpath;
+        cont_t newcont;
+        newcont.type = cont_t::toolpath;
         for(seg_t &s : c.segments){
             seg_t newseg_t;
             newseg_t.type = s.type;
@@ -190,23 +243,26 @@ void offset(layer_t &l,float r){
                 newseg_t.end = s.end+normalize(s.end-s.mid)*(s.type == seg_t::cw?1.0f:-1.0f)*r;
                 newseg_t.mid = s.mid;
             }
-            if(!newcont_t.segments.empty()){
-                seg_t last = newcont_t.segments.back();
-                join(last, newseg_t, newcont_t, s.start,r);
+            if(!newcont.segments.empty()){
+                seg_t last = newcont.segments.back();
+                join(last, newseg_t, newcont, s.start,r);
             }
 
-            newcont_t.segments.push_back(newseg_t);
+            newcont.segments.push_back(newseg_t);
         }
-        if(!newcont_t.segments.empty()){
-            seg_t last = newcont_t.segments.back();
-            seg_t first = newcont_t.segments.front();
-            join(last, first, newcont_t, c.segments.back().end,r);
+        if(!newcont.segments.empty()){
+            seg_t last = newcont.segments.back();
+            seg_t first = newcont.segments.front();
+            join(last, first, newcont, c.segments.back().end,r);
+            cont_t newcont2;
+            newcont2.type = cont_t::toolpath;
+            trim(newcont);
+	        //TODO: check closed
+            newconts.push_back(newcont);
         }
         
-        //TODO: check closed
-        newcont_ts.push_back(newcont_t);
     }
-    for(cont_t &c : newcont_ts){
+    for(cont_t &c : newconts){
         l.conts.push_back(c);
     }
 }
