@@ -33,7 +33,11 @@ public:
 	glm::vec3 position;
 	glm::vec3 target;
 	glm::vec3 up;
+    glm::vec3 direction;
+    glm::vec3 right;
 	glm::quat orientation;
+    glm::mat4 modelview;
+    glm::mat4 projection;
 
 	glm::ivec2 viewportSize;
 	double fieldOfView;

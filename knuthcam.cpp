@@ -28,6 +28,8 @@ const float sensitivity = 0.01f; // mouse sensitivity
 bool w = false, s = false, a = false, d = false, q = false, e = false;
 int drag;
 glm::ivec2 mouse, lastMouse;
+glm::mat4 modelview;
+glm::mat4 projection;
 easygl renderer;
 
 static void error_callback(int error, const char* description)
