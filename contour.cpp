@@ -153,11 +153,11 @@ void displaycontour(cont_t c){
 void join(seg_t &s1, seg_t &s2,cont_t &c,vec2 v,float r){
     float a;
     if(s1.end == s2.start){
-        cout << "passt!" << endl;
+        //cout << "passt!" << endl;
     }else{
         a = angle(s1.end-v,s2.start-v);
         if(r>0?a < 180:a > 180){
-            cout << "arc einfügen:" << a << endl;
+            //cout << "arc einfügen:" << a << endl;
             seg_t newseg_t;
             newseg_t.type = r>0?seg_t::cw:seg_t::ccw;
             newseg_t.start = s1.end;
@@ -167,7 +167,7 @@ void join(seg_t &s1, seg_t &s2,cont_t &c,vec2 v,float r){
         }else{
             //s1.end = s1.start;
             //s2.end = s2.start;
-            cout << "clippen: " << a << endl;
+            //cout << "clippen: " << a << endl;
         }
     }
 }

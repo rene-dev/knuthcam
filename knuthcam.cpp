@@ -121,9 +121,9 @@ int main(int argc, char *argv[]){
     }
     
     findcontours(d);
-    showclosed(d);
+    //showclosed(d);
     svg_backend.save("test.svg", d);
-    cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
+    cout << "minmax" << to_string(d.min) << " " << to_string(d.max) << endl;
     
     for(layer_t &l : d.layers){
         offset(l,1.0f);
@@ -166,10 +166,10 @@ int main(int argc, char *argv[]){
         
         glColor3f(0.3f, 0, 0);
         glBegin(GL_QUADS);
-        glVertex3f(0, 0, -0.01f);
-        glVertex3f(0, 10, -0.01f);
-        glVertex3f(16, 10, -0.01f);
-        glVertex3f(16, 0, -0.01f);
+        glVertex3f(d.min.x/10, d.min.y/10, -0.01f);
+        glVertex3f(d.min.x/10, d.max.y/10, -0.01f);
+        glVertex3f(d.max.x/10, d.max.y/10, -0.01f);
+        glVertex3f(d.max.x/10, d.min.y/10, -0.01f);
         glEnd();
         
         glBegin(GL_LINES);

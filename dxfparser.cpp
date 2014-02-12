@@ -58,8 +58,8 @@ void DxfParser::addLine(const DL_LineData& d) {
 	//cout << "line on layer " << a.getLayer() << " from " << d.x1 << "," << d.y1 << " to " << d.x2 << "," << d.y2 << endl;
 }
 void DxfParser::addArc(const DL_ArcData& d) {
-	cout << __func__ << endl;
-	cout << d.cx << "," << d.cy << " r:" << d.radius << " start:" << d.angle1 << " end:" << d.angle2 << " " << endl;
+	//cout << __func__ << endl;
+	//cout << d.cx << "," << d.cy << " r:" << d.radius << " start:" << d.angle1 << " end:" << d.angle2 << " " << endl;
 	DL_Attributes a = getAttributes();
 	string layer = a.getLayer();
 	seg_t s;
