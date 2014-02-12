@@ -156,15 +156,24 @@ void join(seg_t &s1, seg_t &s2,cont_t &c,vec2 v,float r){
         //cout << "passt!" << endl;
     }else{
         a = angle(s1.end-v,s2.start-v);
-        if(r>0?a < 180:a > 180){
+        if(r>0?a <= 180:a >= 180){
             //cout << "arc einfügen:" << a << endl;
-            seg_t newseg_t;
-            newseg_t.type = r>0?seg_t::cw:seg_t::ccw;
-            newseg_t.start = s1.end;
-            newseg_t.end = s2.start;
-            newseg_t.mid = v;
-            c.segments.push_back(newseg_t);
+            seg_t newseg;
+            newseg.type = r>0?seg_t::cw:seg_t::ccw;
+            newseg.start = s1.end;
+            newseg.end = s2.start;
+            newseg.mid = v;
+            c.segments.push_back(newseg);
         }else{
+            seg_t newseg1,newseg2;
+            newseg1.type = seg_t::line;
+            newseg1.start = s1.end;
+            newseg1.end = v;
+            newseg2.type = seg_t::line;
+            newseg2.start = v;
+            newseg2.end = s2.start;
+            c.segments.push_back(newseg1);
+            c.segments.push_back(newseg2);
             //s1.end = s1.start;
             //s2.end = s2.start;
             //cout << "clippen: " << a << endl;
