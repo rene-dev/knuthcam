@@ -2,6 +2,7 @@
 
 using std::cout;
 using std::endl;
+using glm::vec2;
 
 int DxfParser::open(string s, drawing_t &d){
 	drawing = &d;

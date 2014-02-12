@@ -26,6 +26,8 @@
 #include <glm/gtx/string_cast.hpp>
 #include <math.h>
 
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
 class easygl
 {
 public:

@@ -148,9 +148,6 @@ int main(int argc, char *argv[]){
     glfwSetMouseButtonCallback(window,mousebutton_callback);
     glfwSetCursorPosCallback(window,mousepos_callback);
 
-    //renderer.currentPath = gcode("gcode.ngc");
-    //interpol(renderer.currentPath);
-    //renderer.robotState = &renderer.currentPath->pos;
     renderer.init();
 
 	double time = glfwGetTime();

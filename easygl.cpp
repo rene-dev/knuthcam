@@ -85,7 +85,8 @@ void easygl::draw(float period)
 }
 
 void easygl::scroll(double offset){
-    movement.z += offset;
+    fieldOfView = CLAMP(fieldOfView -= offset,10,150);
+    //movement.z += offset;
     /*
     double deltaAperture = offset * -fieldOfView / 200.0;
     fieldOfView += deltaAperture;

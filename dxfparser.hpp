@@ -18,7 +18,7 @@ class DxfParser : public DL_CreationAdapter, importexport{
 		int save(string s, drawing_t &d);
 	private:
 		DL_Dxf dxf;
-        void minmax (vec2);
+        void minmax (glm::vec2);
 		void processCodeValuePair(unsigned int, char*);
 		void addLayer(const DL_LayerData&);
 		//void addBlock(const DL_BlockData&);

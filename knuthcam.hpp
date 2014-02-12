@@ -4,12 +4,10 @@
 #include <glm/glm.hpp>
 #include <string>
 
-using glm::vec2;
-
 typedef struct{
-    vec2 start;
-    vec2 end;
-    vec2 mid;
+    glm::vec2 start;
+    glm::vec2 end;
+    glm::vec2 mid;
     double r;
     bool used;
     enum{
@@ -37,8 +35,8 @@ typedef struct{
 typedef struct{
     std::vector<layer_t> layers;
     std::string name;
-    vec2 min;
-    vec2 max;
+    glm::vec2 min;
+    glm::vec2 max;
 }drawing_t;
 
 #endif
