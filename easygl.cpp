@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Rene, ands. All rights reserved.
 //
 
-#include "easygl.h"
+#include "easygl.hpp"
 
 using std::cout;
 using std::endl;

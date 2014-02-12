@@ -8,8 +8,8 @@
 #include <dxflib/dl_creationadapter.h>
 #include <glm/glm.hpp>
 
-#include "knuthcam.h"
-#include "importexport.h"
+#include "knuthcam.hpp"
+#include "importexport.hpp"
 
 class DxfParser : public DL_CreationAdapter, importexport{
 	public:
@@ -33,7 +33,7 @@ class DxfParser : public DL_CreationAdapter, importexport{
 		void addVertex(const DL_VertexData&);
 
 		void addSpline(const DL_SplineData&);
-		void addControlPoint(const DL_ControlPointData&);
+		void addcont_trolPoint(const DL_ControlPointData&);
 		void addKnot(const DL_KnotData&);
 
 		void addInsert(const DL_InsertData&);

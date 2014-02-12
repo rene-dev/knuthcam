@@ -1,5 +1,5 @@
-#ifndef contour_h
-#define contour_h
+#ifndef cont_tour_h
+#define cont_tour_h
 
 #include <iostream>
 #include <string>
@@ -14,18 +14,18 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <GLFW/glfw3.h>
 
-#include "knuthcam.h"
+#include "knuthcam.hpp"
 
-void findcontours(drawing_t &d);
+void findcont_tours(drawing_t &d);
 void showopen(drawing_t &d);
 void showclosed(drawing_t &d);
-void showsegments(drawing_t &d);
-void displaycontour(cont c);
+void showseg_tments(drawing_t &d);
+void displaycont_tour(cont_t c);
 void offset(layer_t &c,float);
-void join(seg &s1, seg &s2,cont &c,glm::vec2,float);
+void join(seg_t &s1, seg_t &s2,cont_t &c,glm::vec2,float);
 float angle(glm::vec2,glm::vec2);
 float angle(glm::vec2 a, glm::vec2 b);
 float angle(glm::vec2 a);
-bool turn(cont);
+bool turn(cont_t);
 
 #endif

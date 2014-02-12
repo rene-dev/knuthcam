@@ -1,4 +1,4 @@
-#include "contour.h"
+#include "contour.hpp"
 
 using std::cout;
 using std::endl;
@@ -8,22 +8,22 @@ using glm::to_string;
 using glm::normalize;
 using glm::rotate;
 
-void findcontours(drawing_t &d){
+void findcont_tours(drawing_t &d){
 	vec2 pos;
 	bool sucess = false;
 	double tolerance = 0.01; // konturfehler
 	for(layer_t &l : d.layers){
 		//cout << "suche layer " << l.name << endl;
-		for(seg &s1 : l.segments.segments){
+		for(seg_t &s1 : l.seg_tments.segments){
 			if(!s1.used){
-				cont c;
+				cont_t c;
 				s1.used = true;
 				c.segments.push_back(s1);
 				//cout << "neu mit:" << to_string(s1.start) << to_string(s1.end) << endl;
 				pos = s1.end;
 				do{
 					sucess = false;
-					for(seg &s2 : l.segments.segments){
+					for(seg_t &s2 : l.seg_tments.segments){
 						//cout << "checking" << to_string(s2.start) << to_string(s2.end) << endl;
 						if(!s2.used){
 							if(abs(length(pos - s2.start)) <= tolerance){
@@ -33,8 +33,8 @@ void findcontours(drawing_t &d){
 								sucess = true;
 								pos = s2.end;
 							}else if(abs(length(pos - s2.end)) <= tolerance){
-								if(s2.type == seg::ccw){
-									s2.type = seg::cw;
+								if(s2.type == seg_t::ccw){
+									s2.type = seg_t::cw;
 								}
 								s2.used = true;
 								vec2 t = s2.start;
@@ -49,10 +49,10 @@ void findcontours(drawing_t &d){
 					}
 				}while(sucess);
 				if(abs(length(c.segments.front().start - c.segments.back().end)) <= tolerance){
-                    c.type = cont::ccont;
+                    c.type = cont_t::ccont_t;
 					l.conts.push_back(c);
 				}else{
-                    c.type = cont::ocont;
+                    c.type = cont_t::ocont_t;
 					l.conts.push_back(c);
 				}
 			}
@@ -61,10 +61,10 @@ void findcontours(drawing_t &d){
 	}
 }
 
-void showsegments(drawing_t &d){
+void showseg_tments(drawing_t &d){
 	for(layer_t &l : d.layers){
 		cout << "layer " << l.name << endl;
-		for(seg &s1 : l.segments.segments){
+		for(seg_t &s1 : l.seg_tments.segments){
 			cout << to_string(s1.start) << to_string(s1.end) << endl;
 		}
 	}
@@ -74,9 +74,9 @@ void showclosed(drawing_t &d){
 	cout << "closed" << endl;
 	for(layer_t &l : d.layers){
 		cout << "layer " << l.name << endl;
-		for(cont &c : l.conts){
-			cout << " " << "cont" << endl;
-			for(seg &s1 : c.segments){
+		for(cont_t &c : l.conts){
+			cout << " " << "cont_t" << endl;
+			for(seg_t &s1 : c.segments){
 				cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
 			}
 		}
@@ -100,30 +100,30 @@ float angle(glm::vec2 v){
     return foo;
 }
 
-bool turn(cont c){
+bool turn(cont_t c){
     float sum = 0;
-    seg tmp;
+    seg_t tmp;
     tmp.start = c.segments.back().start;
     tmp.end = c.segments.back().end;
-    for(seg &s : c.segments){
+    for(seg_t &s : c.segments){
         sum += angle(s.end-s.start,tmp.start-tmp.end)-180;
         tmp = s;
     }
     return sum<0?false:true;
 }
 
-void displaycontour(cont c){
-    for(seg &s : c.segments){
+void displaycont_tour(cont_t c){
+    for(seg_t &s : c.segments){
         //cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
-        if(s.type == seg::line){
+        if(s.type == seg_t::line){
             glVertex3f(s.start.x/10, s.start.y/10, 0);
             glVertex3f(s.end.x/10, s.end.y/10, 0);
-        }else if(s.type == seg::cw || s.type == seg::ccw){
+        }else if(s.type == seg_t::cw || s.type == seg_t::ccw){
             glVertex3f(s.start.x/10, s.start.y/10, 0);
             float a = angle(s.end-s.mid,s.start-s.mid);
             float step = 1.0f;
             vec2 arc = s.start;
-            if(s.type == seg::cw){
+            if(s.type == seg_t::cw){
                 step*=-1;
                 a = 360-a;
             }
@@ -138,7 +138,7 @@ void displaycontour(cont c){
     }
 }
 
-void join(seg &s1, seg &s2,cont &c,vec2 v,float r){
+void join(seg_t &s1, seg_t &s2,cont_t &c,vec2 v,float r){
     float a;
     if(s1.end == s2.start){
         cout << "passt!" << endl;
@@ -146,12 +146,12 @@ void join(seg &s1, seg &s2,cont &c,vec2 v,float r){
         a = angle(s1.end-v,s2.start-v);
         if(r>0?a < 180:a > 180){
             cout << "arc einfügen:" << a << endl;
-            seg newseg;
-            newseg.type = r>0?seg::cw:seg::ccw;
-            newseg.start = s1.end;
-            newseg.end = s2.start;
-            newseg.mid = v;
-            c.segments.push_back(newseg);
+            seg_t newseg_t;
+            newseg_t.type = r>0?seg_t::cw:seg_t::ccw;
+            newseg_t.start = s1.end;
+            newseg_t.end = s2.start;
+            newseg_t.mid = v;
+            c.segments.push_back(newseg_t);
         }else{
             //s1.end = s1.start;
             //s2.end = s2.start;
@@ -161,40 +161,40 @@ void join(seg &s1, seg &s2,cont &c,vec2 v,float r){
 }
 
 void offset(layer_t &l,float r){
-    std::vector<cont> newconts;
-    for(cont &c : l.conts){
-        if(c.type != cont::ccont)
+    std::vector<cont_t> newcont_ts;
+    for(cont_t &c : l.conts){
+        if(c.type != cont_t::ccont_t)
             continue;
-        cont newcont;
-        newcont.type = cont::toolpath;
-        for(seg &s : c.segments){
-            seg newseg;
-            newseg.type = s.type;
-            if(s.type == seg::line){
-                newseg.start = s.start+r*normalize(rotate(s.end-s.start, 90.0f));
-                newseg.end = s.end+r*normalize(rotate(s.end-s.start, 90.0f));
-            }else if(s.type == seg::cw || s.type == seg::ccw){
-                newseg.start = s.start+normalize(s.start-s.mid)*(s.type == seg::cw?1.0f:-1.0f)*r;
-                newseg.end = s.end+normalize(s.end-s.mid)*(s.type == seg::cw?1.0f:-1.0f)*r;
-                newseg.mid = s.mid;
+        cont_t newcont_t;
+        newcont_t.type = cont_t::toolpath;
+        for(seg_t &s : c.segments){
+            seg_t newseg_t;
+            newseg_t.type = s.type;
+            if(s.type == seg_t::line){
+                newseg_t.start = s.start+r*normalize(rotate(s.end-s.start, 90.0f));
+                newseg_t.end = s.end+r*normalize(rotate(s.end-s.start, 90.0f));
+            }else if(s.type == seg_t::cw || s.type == seg_t::ccw){
+                newseg_t.start = s.start+normalize(s.start-s.mid)*(s.type == seg_t::cw?1.0f:-1.0f)*r;
+                newseg_t.end = s.end+normalize(s.end-s.mid)*(s.type == seg_t::cw?1.0f:-1.0f)*r;
+                newseg_t.mid = s.mid;
             }
-            if(!newcont.segments.empty()){
-                seg last = newcont.segments.back();
-                join(last, newseg, newcont, s.start,r);
+            if(!newcont_t.segments.empty()){
+                seg_t last = newcont_t.segments.back();
+                join(last, newseg_t, newcont_t, s.start,r);
             }
 
-            newcont.segments.push_back(newseg);
+            newcont_t.segments.push_back(newseg_t);
         }
-        if(!newcont.segments.empty()){
-            seg last = newcont.segments.back();
-            seg first = newcont.segments.front();
-            join(last, first, newcont, c.segments.back().end,r);
+        if(!newcont_t.segments.empty()){
+            seg_t last = newcont_t.segments.back();
+            seg_t first = newcont_t.segments.front();
+            join(last, first, newcont_t, c.segments.back().end,r);
         }
         
         //TODO: check closed
-        newconts.push_back(newcont);
+        newcont_ts.push_back(newcont_t);
     }
-    for(cont &c : newconts){
+    for(cont_t &c : newcont_ts){
         l.conts.push_back(c);
     }
 }

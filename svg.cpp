@@ -1,4 +1,4 @@
-#include "svg.h"
+#include "svg.hpp"
 
 int svg::open(string s, drawing_t &d){
 	cout << "svg import not implemented!" << endl;
@@ -16,21 +16,21 @@ int svg::save(string s, drawing_t &d){
 	myfile << ">" << endl;
 	for(layer_t &l : d.layers){
 		//cout << "layer " << l.name << endl;
-		for(cont &c : l.conts){
-			//cout << " " << "cont" << endl;
+		for(cont_t &c : l.conts){
+			//cout << " " << "cont_t" << endl;
 			myfile << " <path d = \"" << endl;
-			for(seg &s1 : c.segments){
+			for(seg_t &s1 : c.segments){
 				//cout << "  " << to_string(s1.start) << to_string(s1.end) << endl;
 				switch(s1.type){
-					case seg::line:	
+					case seg_t::line:
 						myfile << "  M " << s1.start.x << ", " << s1.start.y << " L " << s1.end.x << ", " << s1.end.y << endl;
 					break;
 					
-					case seg::cw:
+					case seg_t::cw:
 						myfile << "  M " << s1.start.x << " " << s1.start.y << " A " << s1.r << ", " << s1.r << " 0 0,0 " << s1.end.x << " " << s1.end.y << endl;
 					break;
 					
-					case seg::ccw:
+					case seg_t::ccw:
 						myfile << "  M " << s1.start.x << " " << s1.start.y << " A " << s1.r << ", " << s1.r << " 0 0,1 " << s1.end.x << " " << s1.end.y << endl;
 					break;
 					

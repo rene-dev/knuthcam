@@ -1,7 +1,7 @@
 #ifndef importexport_h
 #define importexport_h
 
-#import "knuthcam.h"
+#import "knuthcam.hpp"
 #include <string>
 #include <iostream>
 

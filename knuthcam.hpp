@@ -17,21 +17,21 @@ typedef struct{
         ccw,
         line
     }type;
-}seg;
+}seg_t;
 
 typedef struct{
-    std::vector<seg> segments;
+    std::vector<seg_t> segments;
     enum{
-        ocont,//offene kontur
-        ccont,//geschlossene kontuur
+        ocont_t,//offene kontur
+        ccont_t,//geschlossene kontuur
         toolpath
     }type;
-}cont;
+}cont_t;
 
 typedef struct{
     std::string name;
-    cont segments;
-    std::vector<cont> conts;
+    cont_t seg_tments;
+    std::vector<cont_t> conts;
 }layer_t;
 
 typedef struct{

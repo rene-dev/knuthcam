@@ -1,4 +1,4 @@
-#include "DxfParser.h"
+#include "DxfParser.hpp"
 
 using std::cout;
 using std::endl;
@@ -40,8 +40,8 @@ void DxfParser::addLine(const DL_LineData& d) {
 	//cout << __func__ << endl;
     DL_Attributes a = getAttributes();
 	string layer = a.getLayer();
-	seg s;
-	s.type = seg::line;
+	seg_t s;
+	s.type = seg_t::line;
 	s.start = vec2(d.x1,d.y1);
 	s.end = vec2(d.x2,d.y2);
     //TODO: klappt noch nicht
@@ -50,7 +50,7 @@ void DxfParser::addLine(const DL_LineData& d) {
 	s.used = false;
 	for(layer_t &l : drawing->layers){
 		if(l.name == layer){
-			l.segments.segments.push_back(s);
+			l.seg_tments.segments.push_back(s);
 			return;
 		}
 	}
@@ -62,8 +62,8 @@ void DxfParser::addArc(const DL_ArcData& d) {
 	cout << d.cx << "," << d.cy << " r:" << d.radius << " start:" << d.angle1 << " end:" << d.angle2 << " " << endl;
 	DL_Attributes a = getAttributes();
 	string layer = a.getLayer();
-	seg s;
-	s.type = seg::ccw;
+	seg_t s;
+	s.type = seg_t::ccw;
 	s.mid = vec2(d.cx,d.cy);
 	s.r = d.radius;
 
@@ -80,7 +80,7 @@ void DxfParser::addArc(const DL_ArcData& d) {
 
 	for(layer_t &l : drawing->layers){
 		if(l.name == layer){
-			l.segments.segments.push_back(s);
+			l.seg_tments.segments.push_back(s);
 			return;
 		}
 	}
@@ -92,7 +92,7 @@ void DxfParser::addEllipse(const DL_EllipseData&) {cout << __func__ << endl;}
 void DxfParser::addPolyline(const DL_PolylineData&) {cout << __func__ << endl;}
 void DxfParser::addVertex(const DL_VertexData&) {cout << __func__ << endl;}
 void DxfParser::addSpline(const DL_SplineData&) {cout << __func__ << endl;}
-void DxfParser::addControlPoint(const DL_ControlPointData&) {cout << __func__ << endl;}
+void DxfParser::addcont_trolPoint(const DL_ControlPointData&) {cout << __func__ << endl;}
 void DxfParser::addKnot(const DL_KnotData&) {cout << __func__ << endl;}
 void DxfParser::addInsert(const DL_InsertData&) {cout << __func__ << endl;}
 void DxfParser::addMText(const DL_MTextData&) {cout << __func__ << endl;}

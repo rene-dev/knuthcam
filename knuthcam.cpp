@@ -10,12 +10,12 @@
 #include <glm/gtx/vector_angle.hpp>
 #include <GLFW/glfw3.h>
 
-#include "importexport.h"
-#include "DxfParser.h"
-#include "svg.h"
-#include "knuthcam.h"
-#include "contour.h"
-#include "easygl.h"
+#include "importexport.hpp"
+#include "DxfParser.hpp"
+#include "svg.hpp"
+#include "knuthcam.hpp"
+#include "contour.hpp"
+#include "easygl.hpp"
 
 using std::cout;
 using std::endl;
@@ -120,20 +120,20 @@ int main(int argc, char *argv[]){
         cout << "cannot open file" << endl;
     }
     
-    findcontours(d);
+    findcont_tours(d);
     showclosed(d);
     svg_backend.save("test.svg", d);
     cout << "minmax" << to_string(d.min) << " " << to_string(d.min) << endl;
     
     for(layer_t &l : d.layers){
-        for(cont &c : l.conts){
+        for(cont_t &c : l.conts){
             if(turn(c)){
-                for(seg &s : c.segments){
+                for(seg_t &s : c.segments){
                     vec2 t = s.start;
                     s.start = s.end;
                     s.end = t;
-                    if(s.type == seg::cw || s.type == seg::ccw)
-                        s.type = s.type == seg::cw?seg::ccw:seg::cw;
+                    if(s.type == seg_t::cw || s.type == seg_t::ccw)
+                        s.type = s.type == seg_t::cw?seg_t::ccw:seg_t::cw;
                 }
                 reverse(c.segments.begin(), c.segments.end());
             }
@@ -186,21 +186,21 @@ int main(int argc, char *argv[]){
         
         glBegin(GL_LINES);
     	for(layer_t &l : d.layers){
-            for(cont &c : l.conts){
+            for(cont_t &c : l.conts){
                 switch (c.type) {
-                    case cont::toolpath:
+                    case cont_t::toolpath:
                         glColor3f(0, 1, 0);
                         break;
-                    case cont::ocont:
+                    case cont_t::ocont_t:
                         glColor3f(1, 0, 0);
                         break;
-                    case cont::ccont:
+                    case cont_t::ccont_t:
                         glColor3f(1, 1, 1);
                         break;
                     default:
                         break;
                 }
-                displaycontour(c);
+                displaycont_tour(c);
             }
         }
         glEnd();

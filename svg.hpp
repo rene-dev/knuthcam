@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "knuthcam.h"
-#include "importexport.h"
+#include "knuthcam.hpp"
+#include "importexport.hpp"
 
 using std::cout;
 using std::endl;
