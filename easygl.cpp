@@ -47,7 +47,7 @@ void easygl::draw(float period)
     // update camera
     //glm::vec3 direction = glm::rotate(orientation, glm::vec3(0, 0, -1));
     //glm::vec3 direction = glm::rotate(glm::quat(0,0,0,0), glm::vec3(0, 0, -1));
-    position = glm::vec3(5.0f, 5.0f, 5.0f) + (movement.z * direction + movement.x/50 * right + movement.y/50 * up);
+    position = glm::vec3(5.0f, 5.0f, 5.0f) + (movement.z * direction + movement.x * right - movement.y * up);
     target = position + direction;
     modelview = glm::lookAt(position, target, up);
     projection = glm::perspective(fieldOfView, aspectRatio, near, far);

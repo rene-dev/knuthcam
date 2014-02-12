@@ -28,8 +28,10 @@ const float sensitivity = 0.01f; // mouse sensitivity
 bool w = false, s = false, a = false, d = false, q = false, e = false;
 int drag;
 glm::ivec2 mouse, lastMouse;
+glm::vec2 glmouse, gllastmouse;
 glm::mat4 modelview;
-glm::mat4 projection;
+GLfloat zbuf = 1;
+//glm::mat4 projection;
 easygl renderer;
 
 static void error_callback(int error, const char* description)
@@ -72,18 +74,34 @@ static void mousebutton_callback(GLFWwindow* window, int button, int action, int
 static void mousepos_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	mouse = glm::ivec2(xpos, ypos);
-	if(drag)
+    glm::vec3 screen=glm::vec3(xpos,renderer.viewportSize.y - ypos,zbuf);
+    glm::vec3 pos= glm::unProject(screen,modelview,renderer.projection,glm::vec4(0,0, renderer.viewportSize.x, renderer.viewportSize.y));
+    glmouse = glm::vec2(pos.x,pos.y);
+
+	if(drag && screen.z != 1)
 	{
 		glm::ivec2 diff = lastMouse - mouse;
-		//renderer.orientation = renderer.orientation * glm::quat(glm::vec3(diff.y, diff.x, 0) * sensitivity);
-    	renderer.movement -= glm::vec3(diff,0);
-        
-	}
+        glm::vec2 gldiff = (gllastmouse - glmouse);
+        //cout << to_string(screen) << endl;
+    	renderer.movement -= glm::vec3(gldiff,0);
+	}else{
+        modelview = renderer.modelview;
+        glReadPixels(xpos,renderer.viewportSize.y - ypos,1,1,GL_DEPTH_COMPONENT,GL_FLOAT,&zbuf);
+    }
+    gllastmouse = glmouse;
 	lastMouse = mouse;
+    
 }
 
 static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset)
 {
+    glReadPixels(mouse.x,renderer.viewportSize.y - mouse.y,1,1,GL_DEPTH_COMPONENT,GL_FLOAT,&zbuf);
+    //renderer.movement += glm::vec3(mouse,0);
+    //renderer.movement.x += (float)(mouse-renderer.viewportSize/2).x/renderer.viewportSize.x;
+    //renderer.movement.y += (float)(mouse-renderer.viewportSize/2).y/renderer.viewportSize.y;
+    //cout << glm::to_string((float)(mouse-renderer.viewportSize/2).x/renderer.viewportSize.x) << endl;
+    //renderer.fieldOfView += yoffset;
+    //cout << renderer.fieldOfView << endl;
     renderer.scroll(yoffset);
 }
 
@@ -157,6 +175,14 @@ int main(int argc, char *argv[]){
 
         glfwGetFramebufferSize(window, &renderer.viewportSize.x, &renderer.viewportSize.y);
         renderer.draw(delta);
+        
+        glColor3f(0.3f, 0, 0);
+        glBegin(GL_QUADS);
+        glVertex3f(0, 0, -0.01f);
+        glVertex3f(0, 10, -0.01f);
+        glVertex3f(16, 10, -0.01f);
+        glVertex3f(16, 0, -0.01f);
+        glEnd();
         
         glBegin(GL_LINES);
     	for(layer_t &l : d.layers){
