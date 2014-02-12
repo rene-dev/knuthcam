@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <string>
 
+#define tolerance 0.01 // konturfehler
+
 typedef struct{
     glm::vec2 start;
     glm::vec2 end;
