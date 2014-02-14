@@ -2,14 +2,36 @@
 #include <wx/glcanvas.h>
 #include <wx/splitter.h>
 #include <wx/listctrl.h>
-#include <wx/treectrl.h>
-#include <wx/treelist.h>
 
 #if !wxUSE_GLCANVAS
     #error "OpenGL required: set wxUSE_GLCANVAS to 1 and rebuild the library"
 #endif
 
-
+class SearchResultsList: public wxListCtrl{
+	public:
+		SearchResultsList(wxWindow* parent);
+		wxString OnGetItemText(long item, long column) const;
+};
+ 
+//Constructor, sets up virtual report list with 3 columns
+SearchResultsList::SearchResultsList(wxWindow* parent):
+					wxListCtrl(parent,wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_VIRTUAL){
+	// Add first column        
+	wxListItem col0; 
+	col0.SetId(0); 
+	col0.SetText( _("Track") ); 
+	col0.SetWidth(300);
+	InsertColumn(0, col0); 
+ 
+	//This should reflect your data
+	SetItemCount(3);
+}
+ 
+//Overload virtual method of wxListCtrl to provide text data for virtual list
+wxString SearchResultsList::OnGetItemText(long item, long column) const{
+	//Use item and column to return the correct data for that particular cell. This example just returns "bawls" no matter what
+	return _("bawls");
+}
 
 class glview: public wxGLCanvas {
         void Render();
@@ -28,6 +50,7 @@ class MyFrame : public wxFrame
       MyFrame(const wxString& title)
              : wxFrame(NULL, wxID_ANY, title)
       {
+            
         wxBoxSizer *sizermain = new wxBoxSizer(wxVERTICAL);
         wxSplitterWindow *splittermain = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(800,600),wxSP_LIVE_UPDATE|wxSP_3DSASH);
         splittermain->SetSashGravity(0);
@@ -39,13 +62,7 @@ class MyFrame : public wxFrame
         wxBoxSizer *txt1sizer = new wxBoxSizer(wxVERTICAL);
         //wxTextCtrl *txt1 = new wxTextCtrl(pnl1, wxID_ANY);
         //txt1sizer->Add(txt1, 1,wxEXPAND,0);
-        //txt1sizer->Add(new SearchResultsList(pnl1), 1,wxEXPAND,0);
-        wxTreeListCtrl* treeCtrl = new wxTreeListCtrl(pnl1, wxID_ANY, wxPoint(0,0), wxSize(200,385),wxTL_MULTIPLE);
-        //wxTreeItemId rootId = treeCtrl->AddRoot(wxT("Workspace"), 0, 0, new wxTreeItemData());
-        //wxTreeItemId itemId1 = treeCtrl->AppendItem(rootId, wxT("Drawing"), 1, 1, new wxTreeItemData());
-        //wxTreeItemId itemId2 = treeCtrl->AppendItem(itemId1, wxT("Layer"), 1, 1, new wxTreeItemData());
-        //wxTreeItemId itemId2 = treeCtrl->AppendItem(rootId, wxT("File item 2"), 1, 1, new MyTreeItemData(wxT("File item 2")));
-        txt1sizer->Add(treeCtrl, 1,wxEXPAND,0);
+        txt1sizer->Add(new SearchResultsList(pnl1), 1,wxEXPAND,0);
         pnl1->SetSizer(txt1sizer);
  
  
