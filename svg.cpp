@@ -1,11 +1,11 @@
 #include "svg.hpp"
 
-int svg::open(string s, drawing_t &d){
-	cout << "svg import not implemented!" << endl;
-	return(0);
-}
+//int svg::open(string s, drawing_t &d){
+//	cout << "svg import not implemented!" << endl;
+//	return(0);
+//}
 
-
+/*
 int svg::save(string s, drawing_t &d){
 	ofstream myfile;
 	myfile.open (s);
@@ -27,11 +27,11 @@ int svg::save(string s, drawing_t &d){
 					break;
 					
 					case seg_t::cw:
-						myfile << "  M " << s1.start.x << " " << s1.start.y << " A " << s1.r << ", " << s1.r << " 0 0,0 " << s1.end.x << " " << s1.end.y << endl;
+						myfile << "  M " << s1.start.x << " " << s1.start.y << " A " << glm::length(s1.start - ((seg_arc*)&s1)->mid) << ", " << glm::length(s1.start - ((seg_arc*)&s1)->mid) << " 0 0,0 " << s1.end.x << " " << s1.end.y << endl;
 					break;
 					
 					case seg_t::ccw:
-						myfile << "  M " << s1.start.x << " " << s1.start.y << " A " << s1.r << ", " << s1.r << " 0 0,1 " << s1.end.x << " " << s1.end.y << endl;
+						myfile << "  M " << s1.start.x << " " << s1.start.y << " A " << glm::length(s1.start - ((seg_arc*)&s1)->mid) << ", " << glm::length(s1.start - ((seg_arc*)&s1)->mid) << " 0 0,1 " << s1.end.x << " " << s1.end.y << endl;
 					break;
 					
 					default:
@@ -46,4 +46,4 @@ int svg::save(string s, drawing_t &d){
 	myfile << "</svg>";
 	myfile.close();
 	return(0);
-}
+}*/

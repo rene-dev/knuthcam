@@ -34,6 +34,36 @@ GLfloat zbuf = 1;
 //glm::mat4 projection;
 easygl renderer;
 
+float angle2(glm::vec2 v1, glm::vec2 v2){
+    float a = atan2(v1.y, v1.x)/M_PI*180.0f;
+    float b = atan2(v2.y, v2.x)/M_PI*180.0f;
+    float c = b - a;
+    if(c > 180.0f){
+        c -= 360.0f;
+    }
+    else if(c < -180.0f){
+        c += 360.0f;
+    }
+    return(c);
+}
+float angle1(glm::vec2 v){
+    float a = atan2(v.y, v.x)/M_PI*180.0f;
+    if(a > 180.0f){
+        a -= 360.0f;
+    }
+    else if(a < -180.0f){
+        a += 360.0f;
+    }
+    return(a);
+}
+
+bool near(glm::vec2 v1, glm::vec2 v2){
+    if(abs(length(v1 - v2)) < tolerance){
+        return(true);
+    }
+    return(false);
+}
+
 static void error_callback(int error, const char* description)
 {
     fputs(description, stderr);
@@ -106,29 +136,68 @@ static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset)
 }
 
 int main(int argc, char *argv[]){
-    DxfParser parser;
-    svg svg_backend;
+    //DxfParser parser;
+    //svg svg_backend;
     
-    drawing_t d;
+    drawing d;
     
-    if(argc < 2){
-        cout << "no file" << endl;
-        return 0;
+    //if(argc < 2){
+    //    cout << "no file" << endl;
+    //    return 0;
+    //}
+    
+    //if(!parser.open(argv[1], d)){
+    //    cout << "cannot open file" << endl;
+    //}
+    layer l1;
+    d << l1;
+    
+    glm::vec2 A = glm::vec2(0,0);
+    glm::vec2 B = glm::vec2(0,100);
+    glm::vec2 C = glm::vec2(100,0);
+    glm::vec2 D = glm::vec2(100,100);
+    glm::vec2 E = glm::vec2(50,50);
+    glm::vec2 F = glm::vec2(30,50);
+    glm::vec2 G = glm::vec2(70,50);
+    glm::vec2 H = glm::vec2(50,30);
+    glm::vec2 I = glm::vec2(50,70);
+    
+    contur c;
+    
+    c   << seg_line(A, B)
+        << seg_line(B, D)
+        << seg_line(D, C)
+        << seg_line(C, A);
+    c.close();
+    c.show();
+    if(c.cw()){
+        cout << "cw" << endl;
     }
-    
-    if(!parser.open(argv[1], d)){
-        cout << "cannot open file" << endl;
+    else{
+        cout << "ccw" << endl;
     }
+    c.reverse();
+    if(c.cw()){
+        cout << "cw" << endl;
+    }
+    else{
+        cout << "ccw" << endl;
+    }
+    d.layers.front() << c;
+
     
-    findcontours(d);
+    
+    
+    //findcontours(d);
     //showclosed(d);
-    svg_backend.save("test.svg", d);
-    cout << "minmax" << to_string(d.min) << " " << to_string(d.max) << endl;
+    //showopen(d);
+    //svg_backend.save("test.svg", d);
+    //cout << "minmax" << to_string(d.min) << " " << to_string(d.max) << endl;
     
-    for(layer_t &l : d.layers){
-        offset(l,1.0f);
+    //for(layer_t &l : d.layers){
+    //    offset(l,1.0f);
         //offset(l,-1.0f);
-    }
+    //}
     
     double newTime;
     double delta;
@@ -163,29 +232,29 @@ int main(int argc, char *argv[]){
         
         glColor3f(0.3f, 0, 0);
         glBegin(GL_QUADS);
-        glVertex3f(d.min.x/10, d.min.y/10, -0.01f);
-        glVertex3f(d.min.x/10, d.max.y/10, -0.01f);
-        glVertex3f(d.max.x/10, d.max.y/10, -0.01f);
-        glVertex3f(d.max.x/10, d.min.y/10, -0.01f);
+//        glVertex3f(d.min.x/10, d.min.y/10, -0.01f);
+//        glVertex3f(d.min.x/10, d.max.y/10, -0.01f);
+//        glVertex3f(d.max.x/10, d.max.y/10, -0.01f);
+//        glVertex3f(d.max.x/10, d.min.y/10, -0.01f);
         glEnd();
         
         glBegin(GL_LINES);
-    	for(layer_t &l : d.layers){
-            for(cont_t &c : l.conts){
-                switch (c.type) {
-                    case cont_t::toolpath:
-                        glColor3f(0, 1, 0);
-                        break;
-                    case cont_t::ocont_t:
-                        glColor3f(1, 0, 0);
-                        break;
-                    case cont_t::ccont_t:
+    	for(layer &l : d.layers){
+            for(contur &c : l.conts){
+//                switch (c.type) {
+//                    case cont_t::toolpath:
+//                        glColor3f(0, 1, 0);
+//                        break;
+//                    case cont_t::ocont_t:
+//                        glColor3f(1, 0, 0);
+//                        break;
+//                    case cont_t::ccont_t:
                         glColor3f(1, 1, 1);
-                        break;
-                    default:
-                        break;
-                }
-                displaycontour(c);
+//                        break;
+//                    default:
+//                        break;
+//                }
+                displaycontour(&c);
             }
         }
         glEnd();
