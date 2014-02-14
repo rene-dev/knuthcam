@@ -30,7 +30,7 @@ SearchResultsList::SearchResultsList(wxWindow* parent):
 //Overload virtual method of wxListCtrl to provide text data for virtual list
 wxString SearchResultsList::OnGetItemText(long item, long column) const{
 	//Use item and column to return the correct data for that particular cell. This example just returns "bawls" no matter what
-	return _("bawls");
+	return wxT("bawls");
 }
 
 class glview: public wxGLCanvas {
