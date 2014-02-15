@@ -8,18 +8,10 @@ using glm::to_string;
 using glm::normalize;
 using glm::rotate;
 
-bool near(glm::vec2 v1, glm::vec2 v2){
-    return abs(length(v1 - v2)) <= tolerance;
-}
-
-bool near(float v1, float v2){
-    return fabs(length(v1 - v2)) <= tolerance;
-}
-
-
 void findcontours(drawing_t &d){
 	vec2 pos;
 	bool sucess = false;
+	double tolerance = 0.01; // konturfehler
 	for(layer_t &l : d.layers){
 		//cout << "suche layer " << l.name << endl;
 		for(seg_t &s1 : l.seg_tments.segments){
@@ -34,13 +26,13 @@ void findcontours(drawing_t &d){
 					for(seg_t &s2 : l.seg_tments.segments){
 						//cout << "checking" << to_string(s2.start) << to_string(s2.end) << endl;
 						if(!s2.used){
-							if(near(pos,s2.start)){
+							if(abs(length(pos - s2.start)) <= tolerance){
 								s2.used = true;
 								c.segments.push_back(s2);
 								//cout << "passt!" << to_string(s2.start) << to_string(s2.end) << endl;
 								sucess = true;
 								pos = s2.end;
-							}else if(near(pos,s2.end)){
+							}else if(abs(length(pos - s2.end)) <= tolerance){
 								if(s2.type == seg_t::ccw){
 									s2.type = seg_t::cw;
 								}
@@ -56,7 +48,7 @@ void findcontours(drawing_t &d){
 						}
 					}
 				}while(sucess);
-				if(near(c.segments.front().start,c.segments.back().end)){
+				if(abs(length(c.segments.front().start - c.segments.back().end)) <= tolerance){
                     c.type = cont_t::ccont_t;
 					l.conts.push_back(c);
 				}else{
@@ -240,6 +232,17 @@ void trim(cont_t &c1){
 			}
 		}
 	}
+}
+
+bool concave(seg_t s1, seg_t s2){
+	vec2
+	
+	
+	float a = angle(s1.end-s1.start,s2.end-s2.start);
+	if(a > 0 && a < 180){
+		return(true);
+	}
+	return(false)
 }
 
 void offset(layer_t &l,float r){
