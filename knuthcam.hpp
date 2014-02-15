@@ -88,7 +88,7 @@ public:
     virtual glm::vec2 points(float t) = 0;
     virtual glm::vec2 start_tan() = 0;
     virtual glm::vec2 end_tan() = 0;
-    virtual void offset(float r) = 0;
+    virtual seg_t* offset(float r) = 0;
 };
 
 class seg_line: public seg_t{
@@ -131,9 +131,12 @@ class seg_line: public seg_t{
         return(glm::normalize(e - s));
     }
                
-    void offset(float r){
-        std::cout << "line offset() missing" << std::endl;
-    };
+    seg_t* offset(float r){
+        glm::vec2 start = s+r*glm::normalize(glm::rotate(e-s, 90.0f));
+        glm::vec2 end = e+r*glm::normalize(glm::rotate(e-s, 90.0f));
+        seg_t* newseg = new seg_line(start,end);
+        return newseg;
+    }
 };
 
 class seg_arc: public seg_t{
@@ -217,9 +220,12 @@ public:
         return(glm::normalize(glm::rotate(s - m, (t == cw)?(90.0f):(-90.0f))));
     }
                
-    void offset(float r){
-        std::cout << "arc offset() missing" << std::endl;
-    };
+    seg_t* offset(float r){
+        glm::vec2 start = s + glm::normalize(s-m * (t == cw ? r : -r));
+        glm::vec2 end = e + glm::normalize(e-m * (t == cw ? r : -r));
+        seg_t* newseg = new seg_arc(t,start,m,end);
+        return newseg;
+    }
 };
 
 class contur{ // ein geschlossener polygonzug, cw = innenkontur
