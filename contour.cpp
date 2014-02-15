@@ -192,6 +192,7 @@ void displaycontour(contur* c){
     seg_t* begin = c->curr();
     vec2 p;
     do{
+        glColor3f(1, 1, 1);
         p = c->start();
         glVertex3f(p.x/10, p.y/10, 0);
         if(c->complex()){
@@ -203,6 +204,12 @@ void displaycontour(contur* c){
         }
         p = c->end();
         glVertex3f(p.x/10, p.y/10, 0);
+        
+        glColor3f(1, 0, 0);
+        p = c->start();
+        glVertex3f(p.x/10, p.y/10, 0.01);
+        p = c->start_tan() + p;
+        glVertex3f(p.x/10, p.y/10, 0.01);
 
     }while(c->step() != begin);
 }

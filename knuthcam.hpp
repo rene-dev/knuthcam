@@ -210,11 +210,11 @@ public:
     }
                
     glm::vec2 start_tan(){
-        return(glm::normalize(e - s));
+        return(glm::normalize(glm::rotate(s - m, (t == ccw)?(90.0f):(-90.0f))));
     }
                
     glm::vec2 end_tan(){
-        return(glm::normalize(e - s));
+        return(glm::normalize(glm::rotate(s - m, (t == cw)?(90.0f):(-90.0f))));
     }
                
     void offset(float r){
