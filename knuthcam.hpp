@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 
-#define tolerance 0.001 // konturfehler
+#define tolerance 0.005 // konturfehler
 float angle2(glm::vec2 v1, glm::vec2 v2);
 float angle1(glm::vec2 v);
 bool near(glm::vec2 v1, glm::vec2 v2);
@@ -166,6 +166,12 @@ public:
     }
     float angle(){
         float a = angle2(s - m, e - m);
+        if(a < 0){
+            a += 360;
+        }
+        if(t == cw){
+            return(a-360);
+        }
         return(a);
         //return(0.0f);
     }
@@ -173,7 +179,7 @@ public:
         if(t == ccw){
             std::cout << "c";
         }
-        std::cout << "cw";
+        std::cout << "cw " << angle() << "° ";
         std::cout << "(" << start().x << "/" << start().y << ") -> (" << mid().x << "/" << mid().y << ") -> (" << end().x << "/" << end().y << ") " << std::endl;
     }
     void reverse(){
@@ -374,7 +380,8 @@ public:
 
     glm::vec2 start(){
         if(seg){
-            return(prev()->end());
+            //return(prev()->end());
+            return(curr()->start());
         }
         return(glm::vec2(NAN, NAN));
     }
@@ -448,15 +455,15 @@ public:
             switch(next()->type()){
                 case seg_t::misc:
                 case seg_t::line:
-                    v2 =  next()->end() - end();
+                    v2 =  next()->end() - next()->start();
                 break;
                     
                 case seg_t::cw:
-                    v2 =  glm::rotate(end() - ((seg_arc*)next())->mid(), -90.0f);
+                    v2 =  glm::rotate(((seg_arc*)next())->start() - ((seg_arc*)next())->mid(), -90.0f);
                 break;
                     
                 case seg_t::ccw:
-                    v2 =  glm::rotate(end() - ((seg_arc*)next())->mid(), 90.0f);
+                    v2 =  glm::rotate(((seg_arc*)next())->start() - ((seg_arc*)next())->mid(), 90.0f);
                 break;
                 
                 case seg_t::none:
