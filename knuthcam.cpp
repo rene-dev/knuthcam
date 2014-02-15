@@ -136,55 +136,59 @@ static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset)
 }
 
 int main(int argc, char *argv[]){
-    //DxfParser parser;
+    DxfParser parser;
     //svg svg_backend;
     
     drawing d;
     
-    //if(argc < 2){
-    //    cout << "no file" << endl;
-    //    return 0;
-    //}
-    
-    //if(!parser.open(argv[1], d)){
-    //    cout << "cannot open file" << endl;
-    //}
-    layer l1;
-    d << l1;
-    
-    glm::vec2 A = glm::vec2(0,0);
-    glm::vec2 B = glm::vec2(0,100);
-    glm::vec2 C = glm::vec2(100,0);
-    glm::vec2 D = glm::vec2(100,100);
-    glm::vec2 E = glm::vec2(50,50);
-    glm::vec2 F = glm::vec2(30,50);
-    glm::vec2 G = glm::vec2(70,50);
-    glm::vec2 H = glm::vec2(50,30);
-    glm::vec2 I = glm::vec2(50,70);
-    
-    contur c;
-    
-    c   << seg_line(A, B)
-        << seg_line(B, D)
-        << seg_line(D, C)
-        << seg_line(C, A);
-    c.close();
-    c.show();
-    if(c.cw()){
-        cout << "cw" << endl;
+    if(argc < 2){
+        cout << "no file" << endl;
+        return 0;
     }
-    else{
-        cout << "ccw" << endl;
+    
+    if(!parser.open(argv[1], d)){
+        cout << "cannot open file" << endl;
     }
-    c.reverse();
-    if(c.cw()){
-        cout << "cw" << endl;
+    for(layer &l : d.layers){
+        l.findcontours();
+        l.show();
     }
-    else{
-        cout << "ccw" << endl;
-    }
-    d.layers.front() << c;
-
+//    layer l1;
+//    d << l1;
+//    
+//    glm::vec2 A = glm::vec2(0,0);
+//    glm::vec2 B = glm::vec2(0,100);
+//    glm::vec2 C = glm::vec2(100,0);
+//    glm::vec2 D = glm::vec2(100,100);
+//    glm::vec2 E = glm::vec2(50,50);
+//    glm::vec2 F = glm::vec2(30,50);
+//    glm::vec2 G = glm::vec2(70,50);
+//    glm::vec2 H = glm::vec2(50,30);
+//    glm::vec2 I = glm::vec2(50,70);
+//    
+//    contur c;
+//    
+//    c   << seg_line(A, B)
+//        << seg_line(B, D)
+//        << seg_line(D, C)
+//        << seg_line(C, A);
+//    c.close();
+//    c.show();
+//    if(c.cw()){
+//        cout << "cw" << endl;
+//    }
+//    else{
+//        cout << "ccw" << endl;
+//    }
+//    c.reverse();
+//    if(c.cw()){
+//        cout << "cw" << endl;
+//    }
+//    else{
+//        cout << "ccw" << endl;
+//    }
+//    d.layers.front() << c;
+//
     
     
     
@@ -232,10 +236,10 @@ int main(int argc, char *argv[]){
         
         glColor3f(0.3f, 0, 0);
         glBegin(GL_QUADS);
-//        glVertex3f(d.min.x/10, d.min.y/10, -0.01f);
-//        glVertex3f(d.min.x/10, d.max.y/10, -0.01f);
-//        glVertex3f(d.max.x/10, d.max.y/10, -0.01f);
-//        glVertex3f(d.max.x/10, d.min.y/10, -0.01f);
+        glVertex3f(d.min.x/10, d.min.y/10, -0.01f);
+        glVertex3f(d.min.x/10, d.max.y/10, -0.01f);
+        glVertex3f(d.max.x/10, d.max.y/10, -0.01f);
+        glVertex3f(d.max.x/10, d.min.y/10, -0.01f);
         glEnd();
         
         glBegin(GL_LINES);

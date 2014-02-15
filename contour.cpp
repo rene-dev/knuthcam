@@ -196,14 +196,14 @@ void displaycontour(contur* c){
             glVertex3f(c->end().x/10, c->end().y/10, 0);
         }else if(c->type() == seg_t::cw || c->type() == seg_t::ccw){
             glVertex3f(c->start().x/10, c->start().y/10, 0);
-            float a = angle2(c->end() - c->mid(), c->start() - c->mid());
+            float a = angle2(c->curr()->end() - ((seg_arc*)c->curr())->mid(), c->curr()->start() - ((seg_arc*)c->curr())->mid()) + 180.0f;
+            //cout << "winkel: " << a << endl;
             float step = 1.0f;
             vec2 arc = c->start();
             if(c->type() == seg_t::cw){
                 step *= -1;
-                a = 360 - a;
             }
-            for(float i = fabs(step); i < a; i += fabs(step)){
+            for(float i = 0; i < fabs(a); i += fabs(step)){
                 arc = glm::rotate(arc - c->mid(),step);
                 arc += c->mid();
                 glVertex3f(arc.x/10, arc.y/10, 0);

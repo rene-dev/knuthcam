@@ -6,7 +6,7 @@
 #include <string>
 #include <iostream>
 
-#define tolerance 0.01 // konturfehler
+#define tolerance 0.001 // konturfehler
 float angle2(glm::vec2 v1, glm::vec2 v2);
 float angle1(glm::vec2 v);
 bool near(glm::vec2 v1, glm::vec2 v2);
@@ -37,6 +37,8 @@ public:
         l[0] = this;
         l[1] = this;
     }
+    
+    virtual void show() = 0;
     
     seg_t(glm::vec2 end) : seg_t(){
         this->e = end;
@@ -81,6 +83,21 @@ public:
     void prev(seg_t* s){
         l[0] = s;
     }
+    virtual void reverse() = 0;
+};
+
+class seg_line: public seg_t{
+	public:
+		seg_line(glm::vec2 e) : seg_t(e){
+			this->t = line;
+		}
+		seg_line(glm::vec2 s, glm::vec2 e) : seg_t(s, e){
+			this->t = line;
+		}
+    void show(){
+        std::cout << "(" << start().x << "/" << start().y << ") -> (" << end().x << "/" << end().y << ") " << std::endl;
+    }
+    
     void reverse(){
         glm::vec2 tmp;
         tmp = s;
@@ -89,35 +106,26 @@ public:
     }
 };
 
-class seg_line: public seg_t{
-	public:
-		seg_line() : seg_t(){
-			this->t = line;
-		}
-		seg_line(glm::vec2 e) : seg_t(e){
-			this->t = line;
-		}
-		seg_line(glm::vec2 s, glm::vec2 e) : seg_t(s, e){
-			this->t = line;
-		}
-};
-
 class seg_arc: public seg_t{
 protected:
     glm::vec2 m;
 public:
-    
-    seg_arc() : seg_t(){
-        this->t = misc;
-        //mid.x = NAN;
-        //mid.y = NAN;
-    }
-    seg_arc(glm::vec2 m, glm::vec2 e) : seg_t(e){
-        this->t = misc;
+    seg_arc(bool cw_arc, glm::vec2 m, glm::vec2 e) : seg_t(e){
+        if(cw_arc){
+            this->t = cw;
+        }
+        else{
+            this->t = ccw;
+        }
         this->m = m;
     }
-    seg_arc(glm::vec2 s, glm::vec2 m, glm::vec2 e) : seg_t(s, e){
-        this->t = misc;
+    seg_arc(bool cw_arc, glm::vec2 s, glm::vec2 m, glm::vec2 e) : seg_t(s, e){
+        if(cw_arc){
+            this->t = cw;
+        }
+        else{
+            this->t = ccw;
+        }
         this->m = m;
     }
     glm::vec2 mid(){
@@ -126,33 +134,25 @@ public:
     void mid(glm::vec2 m){
         this->m = m;
     }
-};
-
-class seg_cw_arc: public seg_arc{
-	public:
-		seg_cw_arc() : seg_arc(){
-			this->t = cw;
-		}
-		seg_cw_arc(glm::vec2 mid, glm::vec2 end) : seg_arc(mid, end){
-			this->t = cw;
-		}
-		
-		seg_cw_arc(glm::vec2 start, glm::vec2 mid, glm::vec2 end) : seg_arc(start, mid, end){
-			this->t = cw;
-		}
-};
-
-class seg_ccw_arc: public seg_arc{
-	public:
-		seg_ccw_arc() : seg_arc(){
-			this->t = ccw;
-		}
-		seg_ccw_arc(glm::vec2 m, glm::vec2 e) : seg_arc(m, e){
-			this->t = ccw;
-		}
-		seg_ccw_arc(glm::vec2 s, glm::vec2 m, glm::vec2 e) : seg_arc(s, m, e){
-			this->t = ccw;
-		}
+    void show(){
+        if(t == ccw){
+            std::cout << "c";
+        }
+        std::cout << "cw";
+        std::cout << "(" << start().x << "/" << start().y << ") -> (" << mid().x << "/" << mid().y << ") -> (" << end().x << "/" << end().y << ") " << std::endl;
+    }
+    void reverse(){
+        glm::vec2 tmp;
+        tmp = s;
+        s = e;
+        e = tmp;
+        if(t == cw){
+            t = ccw;
+        }
+        else{
+            t = cw;
+        }
+    }
 };
 
 class contur{ // ein geschlossener polygonzug, cw = innenkontur
@@ -278,26 +278,26 @@ public:
         return(*this);
     }
     
-    contur& operator<<(seg_t s){
-        seg_t* s1 = 0;
-        switch(s.type()){
-            case seg_t::line:
-                s1 = new seg_line(s.start(), s.end());
-            break;
-            case seg_t::cw:
-                s1 = new seg_cw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
-            break;
-            case seg_t::ccw:
-                s1 = new seg_ccw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
-            break;
-            case seg_t::misc:
-            break;
-            case seg_t::none:
-            break;
-        }
-        insert(s1);
-        return(*this);
-    }
+//    contur& operator<<(seg_t s){
+//        seg_t* s1 = 0;
+//        switch(s.type()){
+//            case seg_t::line:
+//                s1 = new seg_line(s.start(), s.end());
+//            break;
+//            case seg_t::cw:
+//                s1 = new seg_cw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
+//            break;
+//            case seg_t::ccw:
+//                s1 = new seg_ccw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
+//            break;
+//            case seg_t::misc:
+//            break;
+//            case seg_t::none:
+//            break;
+//        }
+//        insert(s1);
+//        return(*this);
+//    }
     
     contur& operator>>(seg_t* s){
         cut(s);
@@ -339,7 +339,7 @@ public:
     
     float angle(){
         glm::vec2 v1, v2;
-        std::cout << "ang: ("<< start().x << "/" << start().y << ")"<< "/(" << end().x << "/" << end().y << ") -> ("<< next()->start().x << "/" << next()->start().y << ")"<< "/(" << next()->end().x << "/" << next()->end().y << ")";
+        //std::cout << "ang: ("<< start().x << "/" << start().y << ")"<< "/(" << end().x << "/" << end().y << ") -> ("<< next()->start().x << "/" << next()->start().y << ")"<< "/(" << next()->end().x << "/" << next()->end().y << ")";
         if(size > 1){
             switch(type()){
                 case seg_t::misc:
@@ -382,7 +382,7 @@ public:
             float a;
             a = angle2(v1, v2);
 
-            std::cout << " = " << a << std::endl;
+            //std::cout << " = " << a << std::endl;
             return(a);
         }
         return(NAN);
@@ -416,7 +416,7 @@ public:
         std::cout << std::endl;
         std::cout << "size: " << length() << std::endl;
         do{
-            std::cout << "(" << start().x << "/" << start().y << ") "<< "-> (" << end().x << "/" << end().y << ") " << std::endl;
+            curr()->show();
         }while(step() != begin);
         std::cout << std::endl;
     }
@@ -458,15 +458,66 @@ public:
 class layer{
 public:
     std::string name;
-    std::vector<seg_t> segments;
+    std::vector<seg_t *> segments;
     std::vector<contur> conts;
     layer&  operator<<(const contur& c){
         conts.push_back(c);
         return(*this);
     }
-    layer& operator<<(const seg_t& s){
+    layer& operator<<(seg_t* s){
         segments.push_back(s);
         return(*this);
+    }
+    
+    
+    void findcontours(){
+        glm::vec2 pos;
+        bool sucess = false;
+        //cout << "suche layer " << l.name << endl;
+        for(seg_t *s1 : segments){
+            if(!s1->used){
+                contur c;
+                s1->used = true;
+                c << s1;
+                //cout << "neu mit:" << to_string(s1.start) << to_string(s1.end) << endl;
+                pos = s1->end();
+                do{
+                    sucess = false;
+                    for(seg_t *s2 : segments){
+                        //cout << "checking" << to_string(s2.start) << to_string(s2.end) << endl;
+                        if(!s2->used){
+                            if(near(pos, s2->start())){
+                                s2->used = true;
+                                c << s2;
+                                //cout << "passt!" << to_string(s2.start) << to_string(s2.end) << endl;
+                                sucess = true;
+                                pos = s2->end();
+                            }else if(near(pos, s2->end())){
+                                s2->reverse();
+                                s2->used = true;
+                                c << s2;
+                                //cout << "hallo2!" << endl;
+                                pos = s2->end();
+                                sucess = true;
+                            }
+                        }
+                    }
+                }while(sucess);
+                //c.closed();
+                //c.close();
+                if(!c.cw()){
+                    c.reverse();
+                }
+                *this << c;
+            }
+            //cout << to_string(s.start) << to_string(s.end) << endl;
+        }
+    }
+    
+    void show(){
+        for(contur c : conts){
+            c.show();
+        }
     }
 };
 

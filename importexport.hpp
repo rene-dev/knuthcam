@@ -1,14 +1,14 @@
 #ifndef importexport_h
 #define importexport_h
 
-#import "knuthcam.hpp"
+#include "knuthcam.hpp"
 #include <string>
 #include <iostream>
 
 class importexport{
 	public:
-		//int open(std::string file, drawing_t &d);
-		//int save(std::string file, drawing_t &d);
+		int open(std::string file, drawing &d);
+		int save(std::string file, drawing &d);
 };
 
 #endif
