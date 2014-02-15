@@ -6,8 +6,8 @@ using glm::vec2;
 
 int DxfParser::open(string s, drawing &d){
 	drw = &d;
-    drw->min = vec2(10,10);
-    drw->max = vec2(10,10);
+    drw->min = vec2(0,0);
+    drw->max = vec2(0,0);
 	return dxf.in(s,this);
 }
 
