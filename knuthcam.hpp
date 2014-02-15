@@ -3,6 +3,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
+#include <glm/gtx/norm.hpp>
 #include <string>
 #include <iostream>
 
@@ -37,13 +39,9 @@ public:
         l[0] = this;
         l[1] = this;
     }
-    
-    virtual void show() = 0;
-    
     seg_t(glm::vec2 end) : seg_t(){
         this->e = end;
     }
-    
     seg_t(glm::vec2 start, glm::vec2 end) : seg_t(end){
         this->s = start;
     }
@@ -83,7 +81,14 @@ public:
     void prev(seg_t* s){
         l[0] = s;
     }
+    virtual void show() = 0;
     virtual void reverse() = 0;
+    virtual float length() = 0;
+    virtual bool complex() = 0;
+    virtual glm::vec2 points(float t) = 0;
+    virtual glm::vec2 start_tan() = 0;
+    virtual glm::vec2 end_tan() = 0;
+    virtual void offset(float r) = 0;
 };
 
 class seg_line: public seg_t{
@@ -104,6 +109,31 @@ class seg_line: public seg_t{
         s = e;
         e = tmp;
     }
+    
+    float length(){
+        return(fabs(glm::length(e - s)));
+    }
+    
+    bool complex(){
+        return(false);
+    }
+    
+    glm::vec2 points(float t){
+        t = fmodf(fabs(t), 1);
+        return(s + t * (e - s));
+    }
+               
+    glm::vec2 start_tan(){
+        return(glm::normalize(e - s));
+    }
+               
+    glm::vec2 end_tan(){
+        return(glm::normalize(e - s));
+    }
+               
+    void offset(float r){
+        std::cout << "line offset() missing" << std::endl;
+    };
 };
 
 class seg_arc: public seg_t{
@@ -134,6 +164,11 @@ public:
     void mid(glm::vec2 m){
         this->m = m;
     }
+    float angle(){
+        float a = angle2(s - m, e - m);
+        return(a);
+        //return(0.0f);
+    }
     void show(){
         if(t == ccw){
             std::cout << "c";
@@ -153,18 +188,44 @@ public:
             t = cw;
         }
     }
+    
+    float length(){
+        return(fabs(glm::length(e - s)));
+    }
+    
+    bool complex(){
+        return(true);
+    }
+    
+    glm::vec2 points(float t){
+        
+        t = fmodf(fabs(t), 1);
+        return(m + glm::rotate(s - m, angle() * t));
+    }
+               
+    glm::vec2 start_tan(){
+        return(glm::normalize(e - s));
+    }
+               
+    glm::vec2 end_tan(){
+        return(glm::normalize(e - s));
+    }
+               
+    void offset(float r){
+        std::cout << "arc offset() missing" << std::endl;
+    };
 };
 
 class contur{ // ein geschlossener polygonzug, cw = innenkontur
 private:
     seg_t* seg;
-    unsigned int size;
+    unsigned int s;
     bool next_seg;
     
 public:
     contur(){
         seg = 0;
-        size = 0;
+        s = 0;
         next_seg = 1;
     }
     
@@ -218,7 +279,7 @@ public:
                 seg->link(next_seg, s);
             }
             seg = s;
-            size++;
+            s++;
         }
     }
     
@@ -233,9 +294,9 @@ public:
             
             s->link(next_seg, s);
             s->link(next_seg, s);
-            size--;
+            s--;
             
-            if(size == 0){
+            if(s == 0){
                 seg = 0;
             }
             delete(s);
@@ -253,9 +314,9 @@ public:
             
             s->link(next_seg, s);
             s->link(next_seg, s);
-            size--;
+            s--;
             
-            if(size == 0){
+            if(s == 0){
                 seg = 0;
             }
         }
@@ -325,6 +386,30 @@ public:
         return(glm::vec2(NAN, NAN));
     }
     
+    float length(){
+        return(curr()->length());
+    }
+    
+    bool complex(){
+        return(curr()->complex());
+    }
+    
+    glm::vec2 points(float t){
+        return(curr()->points(t));
+    }
+    
+    glm::vec2 start_tan(){
+        return(curr()->start_tan());
+    }
+    
+    glm::vec2 end_tan(){
+        return(curr()->end_tan());
+    }
+    
+    void offset(float r){
+        curr()->offset(r);
+    };
+    
     glm::vec2 mid(){
         if(seg){
             if(seg->type() == seg_t::ccw || seg->type() == seg_t::cw)
@@ -333,14 +418,14 @@ public:
         return(glm::vec2(NAN, NAN));
     }
     
-    unsigned int length(){
-        return(size);
+    unsigned int size(){
+        return(s);
     }
     
     float angle(){
         glm::vec2 v1, v2;
         //std::cout << "ang: ("<< start().x << "/" << start().y << ")"<< "/(" << end().x << "/" << end().y << ") -> ("<< next()->start().x << "/" << next()->start().y << ")"<< "/(" << next()->end().x << "/" << next()->end().y << ")";
-        if(size > 1){
+        if(size() > 1){
             switch(type()){
                 case seg_t::misc:
                 case seg_t::line:
@@ -389,7 +474,7 @@ public:
     }
     
     bool concave(){
-        if(size){
+        if(size()){
             float a = angle();
             if(a > 0 && a < 180.0f){
                 return(true);
@@ -414,7 +499,7 @@ public:
     void show(){
         seg_t* begin = curr();
         std::cout << std::endl;
-        std::cout << "size: " << length() << std::endl;
+        std::cout << "size: " << size() << std::endl;
         do{
             curr()->show();
         }while(step() != begin);
@@ -423,8 +508,8 @@ public:
     
     void close(){
         seg_t* begin = curr();
-        if(size){
-            if(size == 1){
+        if(size()){
+            if(size() == 1){
                 if(curr()->type() == seg_t::cw || curr()->type() == seg_t::ccw){
                     if(near(curr()->start(), curr()->end())){
                         curr()->end(curr()->start());
