@@ -13,12 +13,14 @@
 
 class DxfParser : public DL_CreationAdapter, importexport{
 	public:
-		drawing *drw;
+        drawing *drw;
 		int open(string s, drawing &d);
 		int save(string s, drawing &d);
 	private:
 		DL_Dxf dxf;
         void minmax (glm::vec2);
+    
+        //DL_CreationAdapter
 		void processCodeValuePair(unsigned int, char*);
 		void addLayer(const DL_LayerData&);
 		//void addBlock(const DL_BlockData&);

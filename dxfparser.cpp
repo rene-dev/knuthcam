@@ -11,7 +11,6 @@ int DxfParser::open(string s, drawing &d){
 	return dxf.in(s,this);
 }
 
-
 int DxfParser::save(string s, drawing &d){
 	cout << "dxf export not implemented!" << endl;
 	return(0);
@@ -37,27 +36,19 @@ void DxfParser::minmax (vec2 v){
 }
 
 void DxfParser::addPoint(const DL_PointData&) {cout << __func__ << endl;}
+
 void DxfParser::addLine(const DL_LineData& d) {
 	//cout << __func__ << endl;
-    DL_Attributes a = getAttributes();
-	string la = a.getLayer();
 	seg_t *s = new seg_line(vec2(d.x1,d.y1), vec2(d.x2,d.y2));
-    //TODO: klappt noch nicht
     minmax(s->start());
     minmax(s->end());
 	//cout << "line on layer " << a.getLayer() << " from " << d.x1 << "," << d.y1 << " to " << d.x2 << "," << d.y2 << endl;
-	for(layer &l : drw->layers){
-		if(l.name == la){
-			l << s;
-			return;
-		}
-	}
-	//cout << "layer " << layer << " not found" << endl;        
+    *drw << getAttributes().getLayer() << s;
 }
+
 void DxfParser::addArc(const DL_ArcData& d) {
 	//cout << __func__ << endl;
 	//cout << d.cx << "," << d.cy << " r:" << d.radius << " start:" << d.angle1 << " end:" << d.angle2 << " " << endl;
-	DL_Attributes a = getAttributes();
     vec2 t1;
 	t1.x = cos(d.angle1 / 180.0 * M_PI) * d.radius;
 	t1.y = sin(d.angle1 / 180.0 * M_PI) * d.radius;
@@ -69,20 +60,22 @@ void DxfParser::addArc(const DL_ArcData& d) {
     vec2 mid = vec2(d.cx,d.cy);
     vec2 start = mid + t1;
     vec2 end = mid + t2;
-	seg_t *s = new seg_arc(false, start, mid, end);
-
-    string la = a.getLayer();
-
-	for(layer &l : drw->layers){
-		if(l.name == la){
-			l << s;
-			return;
-		}
-	}
-
+    seg_t *s = new seg_arc(false, start, mid, end);
+    minmax(start);
+    minmax(end);
+    minmax(mid);
+    *drw << getAttributes().getLayer() << s;
 }
 
-void DxfParser::addCircle(const DL_CircleData&) {cout << __func__ << endl;}
+void DxfParser::addCircle(const DL_CircleData& d) {
+    //cout << __func__ << endl;
+    vec2 mid = vec2(d.cx,d.cy);
+    vec2 startend = mid + vec2(d.radius,0);
+    seg_t *s = new seg_arc(false, startend, mid, startend);
+    minmax(startend);
+    *drw << getAttributes().getLayer() << s;
+    
+}
 void DxfParser::addEllipse(const DL_EllipseData&) {cout << __func__ << endl;}
 void DxfParser::addPolyline(const DL_PolylineData&) {cout << __func__ << endl;}
 void DxfParser::addVertex(const DL_VertexData&) {cout << __func__ << endl;}

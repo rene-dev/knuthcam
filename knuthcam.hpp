@@ -469,7 +469,6 @@ public:
         return(*this);
     }
     
-    
     void findcontours(){
         glm::vec2 pos;
         bool sucess = false;
@@ -525,9 +524,34 @@ class drawing{
 public:
     std::vector<layer> layers;
     std::string name;
+    std::string currentlayer;
     glm::vec2 min;
     glm::vec2 max;
-    drawing& operator<<(const layer& l){
+    
+    drawing(){
+        currentlayer = "0";
+    }
+    
+    void insert(seg_t* seg, std::string layername){
+    	for(layer &l : layers){
+            if(l.name == layername){
+                l << seg;
+                return;
+            }
+        }
+    }
+
+    drawing& operator<<(seg_t* s){
+        insert(s, currentlayer);
+        return(*this);
+    }
+    
+    drawing& operator<<(const std::string& layername){
+        currentlayer = layername;
+        return(*this);
+    }
+    
+    drawing& operator<<(layer& l){
         layers.push_back(l);
         return(*this);
     }
