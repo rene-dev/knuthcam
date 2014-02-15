@@ -11,7 +11,7 @@ using glm::rotate;
 void findcontours(drawing_t &d){
 	vec2 pos;
 	bool sucess = false;
-	double tolerance = 0.01; // konturfehler
+	//double tolerance = 0.01; // konturfehler
 	for(layer_t &l : d.layers){
 		//cout << "suche layer " << l.name << endl;
 		for(seg_t &s1 : l.seg_tments.segments){
@@ -234,6 +234,7 @@ void trim(cont_t &c1){
 	}
 }
 
+/*
 bool concave(seg_t s1, seg_t s2){
 	vec2
 	
@@ -242,9 +243,9 @@ bool concave(seg_t s1, seg_t s2){
 	if(a > 0 && a < 180){
 		return(true);
 	}
-	return(false)
+	return(false);
 }
-
+*/
 void offset(layer_t &l,float r){
     std::vector<cont_t> newconts;
     for(cont_t &c : l.conts){
