@@ -89,6 +89,7 @@ public:
     virtual glm::vec2 start_tan() = 0;
     virtual glm::vec2 end_tan() = 0;
     virtual void offset(float r) = 0;
+    virtual void destroy() = 0;
 };
 
 class seg_line: public seg_t{
@@ -134,6 +135,10 @@ class seg_line: public seg_t{
     void offset(float r){
         std::cout << "line offset() missing" << std::endl;
     };
+    
+    void destroy(){
+        delete(this);
+    }
 };
 
 class seg_arc: public seg_t{
@@ -220,6 +225,9 @@ public:
     void offset(float r){
         std::cout << "arc offset() missing" << std::endl;
     };
+    void destroy(){
+        delete(this);
+    }
 };
 
 class contur{ // ein geschlossener polygonzug, cw = innenkontur
@@ -305,7 +313,7 @@ public:
             if(s == 0){
                 seg = 0;
             }
-            delete(s);
+            s->destroy();
         }
     }
     
@@ -367,7 +375,7 @@ public:
 //    }
     
     contur& operator>>(seg_t* s){
-        cut(s);
+        del(s);
         return(*this);
     }
     
