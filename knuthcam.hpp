@@ -240,11 +240,11 @@ public:
     }
     
     glm::vec2 offset_start(float r){
-        return(s + glm::normalize(s-m * (t == cw ? r : -r)));
+        return(s + glm::normalize(s-m) * (t == cw ? r : -r));
     }
     
     glm::vec2 offset_end(float r){
-        return(e + glm::normalize(e-m * (t == cw ? r : -r)));
+        return(e + glm::normalize(e-m) * (t == cw ? r : -r));
     }
     
     seg_t* offset(float r){
