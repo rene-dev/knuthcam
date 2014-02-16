@@ -230,7 +230,7 @@ public:
     seg_t* offset(float r){
         glm::vec2 start = s + glm::normalize(s-m * (t == cw ? r : -r));
         glm::vec2 end = e + glm::normalize(e-m * (t == cw ? r : -r));
-        seg_t* newseg = new seg_arc(t,start,m,end);
+        seg_t* newseg = new seg_arc(t == seg_t::cw,start,m,end);
         return newseg;
     }
 };
