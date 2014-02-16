@@ -90,6 +90,8 @@ public:
     virtual glm::vec2 end_tan() = 0;
     virtual void destroy() = 0;
     virtual seg_t* offset(float r) = 0;
+    virtual glm::vec2 offset_start(float r) = 0;
+    virtual glm::vec2 offset_end(float r) = 0;
 };
 
 class seg_line: public seg_t{
@@ -134,9 +136,18 @@ class seg_line: public seg_t{
     void destroy(){
         delete(this);
     }
+    
+    glm::vec2 offset_start(float r){
+        return(s+r*glm::normalize(glm::rotate(e-s, 90.0f)));
+    }
+    
+    glm::vec2 offset_end(float r){
+        return(e+r*glm::normalize(glm::rotate(e-s, 90.0f)));
+    }
+    
     seg_t* offset(float r){
-        glm::vec2 start = s+r*glm::normalize(glm::rotate(e-s, 90.0f));
-        glm::vec2 end = e+r*glm::normalize(glm::rotate(e-s, 90.0f));
+        glm::vec2 start = offset_start(r);
+        glm::vec2 end = offset_end(r);
         seg_t* newseg = new seg_line(start,end);
         return newseg;
     }
@@ -227,12 +238,23 @@ public:
     void destroy(){
         delete(this);
     }
+    
+    glm::vec2 offset_start(float r){
+        return(s + glm::normalize(s-m * (t == cw ? r : -r)));
+    }
+    
+    glm::vec2 offset_end(float r){
+        return(e + glm::normalize(e-m * (t == cw ? r : -r)));
+    }
+    
     seg_t* offset(float r){
-        glm::vec2 start = s + glm::normalize(s-m * (t == cw ? r : -r));
-        glm::vec2 end = e + glm::normalize(e-m * (t == cw ? r : -r));
+        glm::vec2 start = offset_start(r);
+        glm::vec2 end = offset_end(r);
         seg_t* newseg = new seg_arc(t == seg_t::cw,start,m,end);
         return newseg;
     }
+    
+
 };
 
 class contur{ // ein geschlossener polygonzug, cw = innenkontur
@@ -292,10 +314,12 @@ public:
     void insert(seg_t* s){ // insert segment after seg
         if(s){
             if(seg){
-                s->link(!next_seg, seg);
-                s->link(next_seg, seg->link(next_seg));
-                seg->link(next_seg)->link(!next_seg, s);
-                seg->link(next_seg, s);
+                seg_t* st = s;
+                seg_t* en = s->link(!next_seg);
+                st->link(!next_seg, seg);
+                en->link(next_seg, seg->link(next_seg));
+                seg->link(next_seg)->link(!next_seg, en);
+                seg->link(next_seg, st);
             }
             seg = s;
             this->s++;
@@ -405,8 +429,8 @@ public:
         return(curr()->end_tan());
     }
     
-    void offset(float r){
-        curr()->offset(r);
+    seg_t* offset(float r){
+        return(curr()->offset(r));
     };
     
     glm::vec2 mid(){
@@ -493,6 +517,22 @@ public:
         return(false);
     }
     
+    seg_t* join(float r){
+        seg_t* s = 0;
+        if((concave() && r > 0) || (!concave() && r <= 0)){
+            seg_line* l1 = new seg_line(curr()->offset_end(r), curr()->end());
+            seg_line* l2 = new seg_line(curr()->end(), next()->offset_start(r));
+            s = l1;
+            s->link(!next_seg, l2);
+            s->link(next_seg, l2);
+        }
+        else{
+            seg_arc* a = new seg_arc(1, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
+            s = a;
+        }
+        return(s);
+    };
+    
     void show(){
         seg_t* begin = curr();
         std::cout << std::endl;
@@ -557,7 +597,9 @@ public:
             contur newcont;
             seg_t* begin = c.curr();
             do{
-                newcont << c.curr()->offset(r);
+                newcont << c.offset(r);
+                newcont << c.join(r);
+                
             }while(c.step() != begin);
             newconts.push_back(newcont);
         }
