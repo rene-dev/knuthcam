@@ -541,7 +541,7 @@ public:
             l2->link(next_seg, l1);
             s = l1;
         }
-        else if(angle() != 0.0f){
+        else if(fabs(angle()) > 0.01f){
             seg_arc* a = new seg_arc(1, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
             s = a;
         }

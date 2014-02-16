@@ -141,38 +141,38 @@ int main(int argc, char *argv[]){
     
     drawing d;
     
-//    if(argc < 2){
-//        cout << "no file" << endl;
-//        return 0;
-//    }
+    if(argc < 2){
+        cout << "no file" << endl;
+        return 0;
+    }
+    
+    if(!parser.open(argv[1], d)){
+        cout << "cannot open file" << endl;
+    }
+    
+
+//    glm::vec2 A = glm::vec2(0,0);
+//    glm::vec2 B = glm::vec2(0,100);
+//    glm::vec2 C = glm::vec2(100,0);
+//    glm::vec2 D = glm::vec2(100,100);
+//    glm::vec2 E = glm::vec2(50,50);
+//    glm::vec2 F = glm::vec2(30,50);
+//    glm::vec2 G = glm::vec2(70,50);
+//    glm::vec2 H = glm::vec2(50,30);
+//    glm::vec2 I = glm::vec2(50,70);
+//
+//    layer l1;
+//    l1  //<< new seg_line(A, B)
+//        //<< new seg_line(D, B)
+//        //<< new seg_line(D, C)
+//        << new seg_arc(0, F, E, G)
+//        << new seg_arc(0, G, E, F);
 //    
-//    if(!parser.open(argv[1], d)){
-//        cout << "cannot open file" << endl;
-//    }
-    
-
-    glm::vec2 A = glm::vec2(0,0);
-    glm::vec2 B = glm::vec2(0,100);
-    glm::vec2 C = glm::vec2(100,0);
-    glm::vec2 D = glm::vec2(100,100);
-    glm::vec2 E = glm::vec2(50,50);
-    glm::vec2 F = glm::vec2(30,50);
-    glm::vec2 G = glm::vec2(70,50);
-    glm::vec2 H = glm::vec2(50,30);
-    glm::vec2 I = glm::vec2(50,70);
-
-    layer l1;
-    l1  //<< new seg_line(A, B)
-        //<< new seg_line(D, B)
-        //<< new seg_line(D, C)
-        << new seg_arc(0, F, E, G)
-        << new seg_arc(0, G, E, F);
-    
-        //<< new seg_line(C, A);
-
-    d << l1;
-    d.min = glm::vec2(-10, -10);
-    d.max = glm::vec2(110, 110);
+//        //<< new seg_line(C, A);
+//
+//    d << l1;
+//    d.min = glm::vec2(-10, -10);
+//    d.max = glm::vec2(110, 110);
     for(layer &l : d.layers){
         l.findcontours();
         l.offset(1);
