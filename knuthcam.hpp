@@ -250,8 +250,14 @@ public:
     seg_t* offset(float r){
         glm::vec2 start = offset_start(r);
         glm::vec2 end = offset_end(r);
-        seg_t* newseg = new seg_arc(t == seg_t::cw,start,m,end);
-        return newseg;
+        seg_t* newseg = 0;
+        if(abs(glm::length(e-m)) > (t == cw ? r : -r)){
+            newseg = new seg_arc(t == seg_t::cw, start, m, end);
+        }
+        else if(abs(glm::length(e-m)) < (t == cw ? r : -r)){
+            newseg = new seg_line(start, end);
+        }
+        return(newseg);
     }
     
 
@@ -313,6 +319,13 @@ public:
     
     void insert(seg_t* s){ // insert segment after seg
         if(s){
+            int i = 0;
+            seg_t* tmp = s;
+            do{
+                i++;
+                tmp = tmp->next();
+            }while(s != tmp);
+            
             if(seg){
                 seg_t* st = s;
                 seg_t* en = s->link(!next_seg);
@@ -322,7 +335,7 @@ public:
                 seg->link(next_seg, st);
             }
             seg = s;
-            this->s++;
+            this->s += i;
         }
     }
     
@@ -519,28 +532,32 @@ public:
     
     seg_t* join(float r){
         seg_t* s = 0;
-        if((concave() && r > 0) || (!concave() && r <= 0)){
+        if((angle() > 0.0f && r > 0) || (angle() < 0.0f && r <= 0)){
             seg_line* l1 = new seg_line(curr()->offset_end(r), curr()->end());
             seg_line* l2 = new seg_line(curr()->end(), next()->offset_start(r));
+            l1->link(!next_seg, l2);
+            l1->link(next_seg, l2);
+            l2->link(!next_seg, l1);
+            l2->link(next_seg, l1);
             s = l1;
-            s->link(!next_seg, l2);
-            s->link(next_seg, l2);
         }
-        else{
+        else if(angle() != 0.0f){
             seg_arc* a = new seg_arc(1, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
             s = a;
         }
         return(s);
     };
     
-    void show(){
+    bool closed(){
         seg_t* begin = curr();
-        std::cout << std::endl;
-        std::cout << "size: " << size() << std::endl;
-        do{
-            curr()->show();
-        }while(step() != begin);
-        std::cout << std::endl;
+        if(size()){
+            do{
+                if(!near(curr()->start(), prev()->end())){
+                    return(false);
+                }
+            }while(step() != begin);
+        }
+        return(true);
     }
     
     void close(){
@@ -574,6 +591,18 @@ public:
                 }
             }while(step() != begin);
         }
+    }
+    
+    void show(){
+        seg_t* begin = curr();
+        std::cout << std::endl;
+        std::cout << "size: " << size() << std::endl;
+        std::cout << "closed: " << closed() << std::endl;
+        std::cout << "cw: " << cw() << std::endl;
+        do{
+            curr()->show();
+        }while(step() != begin);
+        std::cout << std::endl;
     }
 };
 
