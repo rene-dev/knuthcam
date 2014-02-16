@@ -298,7 +298,7 @@ public:
                 seg->link(next_seg, s);
             }
             seg = s;
-            s++;
+            this->s++;
         }
     }
     
@@ -313,7 +313,7 @@ public:
             
             s->link(next_seg, s);
             s->link(next_seg, s);
-            s--;
+            this->s--;
             
             if(s == 0){
                 seg = 0;
@@ -333,7 +333,7 @@ public:
             
             s->link(next_seg, s);
             s->link(next_seg, s);
-            s--;
+            this->s--;
             
             if(s == 0){
                 seg = 0;
@@ -357,28 +357,7 @@ public:
         insert(s);
         return(*this);
     }
-    
-//    contur& operator<<(seg_t s){
-//        seg_t* s1 = 0;
-//        switch(s.type()){
-//            case seg_t::line:
-//                s1 = new seg_line(s.start(), s.end());
-//            break;
-//            case seg_t::cw:
-//                s1 = new seg_cw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
-//            break;
-//            case seg_t::ccw:
-//                s1 = new seg_ccw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
-//            break;
-//            case seg_t::misc:
-//            break;
-//            case seg_t::none:
-//            break;
-//        }
-//        insert(s1);
-//        return(*this);
-//    }
-    
+
     contur& operator>>(seg_t* s){
         del(s);
         return(*this);
@@ -486,8 +465,7 @@ public:
             
             float a;
             a = angle2(v1, v2);
-
-            //std::cout << " = " << a << std::endl;
+            
             return(a);
         }
         return(NAN);
@@ -508,7 +486,6 @@ public:
         seg_t* begin = curr();
         do{
             a += angle();
-
         }while(step() != begin);
         if(a <= 0){
             return(true);
@@ -609,6 +586,7 @@ public:
                 }while(sucess);
                 //c.closed();
                 //c.close();
+                //c.reverse();
                 if(!c.cw()){
                     c.reverse();
                 }
