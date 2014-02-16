@@ -88,6 +88,7 @@ public:
     virtual glm::vec2 points(float t) = 0;
     virtual glm::vec2 start_tan() = 0;
     virtual glm::vec2 end_tan() = 0;
+    virtual void destroy() = 0;
     virtual seg_t* offset(float r) = 0;
 };
 
@@ -130,7 +131,9 @@ class seg_line: public seg_t{
     glm::vec2 end_tan(){
         return(glm::normalize(e - s));
     }
-               
+    void destroy(){
+        delete(this);
+    }
     seg_t* offset(float r){
         glm::vec2 start = s+r*glm::normalize(glm::rotate(e-s, 90.0f));
         glm::vec2 end = e+r*glm::normalize(glm::rotate(e-s, 90.0f));
@@ -220,6 +223,10 @@ public:
         return(glm::normalize(glm::rotate(s - m, (t == cw)?(90.0f):(-90.0f))));
     }
                
+
+    void destroy(){
+        delete(this);
+    }
     seg_t* offset(float r){
         glm::vec2 start = s + glm::normalize(s-m * (t == cw ? r : -r));
         glm::vec2 end = e + glm::normalize(e-m * (t == cw ? r : -r));
@@ -291,7 +298,7 @@ public:
                 seg->link(next_seg, s);
             }
             seg = s;
-            s++;
+            this->s++;
         }
     }
     
@@ -306,12 +313,12 @@ public:
             
             s->link(next_seg, s);
             s->link(next_seg, s);
-            s--;
+            this->s--;
             
             if(s == 0){
                 seg = 0;
             }
-            delete(s);
+            s->destroy();
         }
     }
     
@@ -326,7 +333,7 @@ public:
             
             s->link(next_seg, s);
             s->link(next_seg, s);
-            s--;
+            this->s--;
             
             if(s == 0){
                 seg = 0;
@@ -350,30 +357,9 @@ public:
         insert(s);
         return(*this);
     }
-    
-//    contur& operator<<(seg_t s){
-//        seg_t* s1 = 0;
-//        switch(s.type()){
-//            case seg_t::line:
-//                s1 = new seg_line(s.start(), s.end());
-//            break;
-//            case seg_t::cw:
-//                s1 = new seg_cw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
-//            break;
-//            case seg_t::ccw:
-//                s1 = new seg_ccw_arc(s.start(), ((seg_arc*)&s)->mid(), s.end());
-//            break;
-//            case seg_t::misc:
-//            break;
-//            case seg_t::none:
-//            break;
-//        }
-//        insert(s1);
-//        return(*this);
-//    }
-    
+
     contur& operator>>(seg_t* s){
-        cut(s);
+        del(s);
         return(*this);
     }
     
@@ -479,8 +465,7 @@ public:
             
             float a;
             a = angle2(v1, v2);
-
-            //std::cout << " = " << a << std::endl;
+            
             return(a);
         }
         return(NAN);
@@ -501,7 +486,6 @@ public:
         seg_t* begin = curr();
         do{
             a += angle();
-
         }while(step() != begin);
         if(a <= 0){
             return(true);
@@ -616,6 +600,7 @@ public:
                 }while(sucess);
                 //c.closed();
                 //c.close();
+                //c.reverse();
                 if(!c.cw()){
                     c.reverse();
                 }
