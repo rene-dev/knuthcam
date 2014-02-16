@@ -559,6 +559,7 @@ public:
             do{
                 newcont << c.curr()->offset(r);
             }while(c.step() != begin);
+            newconts.push_back(newcont);
         }
         for(contur c : newconts){
             conts.push_back(c);
