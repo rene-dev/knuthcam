@@ -151,6 +151,7 @@ int main(int argc, char *argv[]){
     }
     for(layer &l : d.layers){
         l.findcontours();
+        l.offset(1);
         l.show();
     }
 //    layer l1;

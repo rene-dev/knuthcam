@@ -567,6 +567,20 @@ public:
         return(*this);
     }
     
+    void offset(float r){
+        std::vector<contur> newconts;
+        for(contur c : conts){
+            contur newcont;
+            seg_t* begin = c.curr();
+            do{
+                newcont << c.curr()->offset(r);
+            }while(c.step() != begin);
+        }
+        for(contur c : newconts){
+            conts.push_back(c);
+        }
+    }
+    
     void findcontours(){
         glm::vec2 pos;
         bool sucess = false;
