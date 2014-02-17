@@ -206,13 +206,23 @@ void displaycontour(contur* c){
         glVertex3f(p.x/10, p.y/10, 0);
         
         glColor3f(1, 0, 0);
-        p = c->start();
-        glVertex3f(p.x/10, p.y/10, 0.01);
-        p = c->start_tan() + p;
-        glVertex3f(p.x/10, p.y/10, 0.01);
+        arrow(c->start(),c->start_tan());
 
     }while(c->step() != begin);
 }
+
+void arrow(glm::vec2 s,glm::vec2 e){
+    vec2 v1 = 0.5f*glm::rotate(e-s, -45.0f+180.0f)+e;
+    vec2 v2 = 0.5f*glm::rotate(e-s, 45.0f+180.0f)+e;
+    glVertex3f(s.x/10, s.y/10, 0.01);
+    glVertex3f(e.x/10, e.y/10, 0.01);
+    
+    glVertex3f(v1.x/10, v1.y/10, 0.01);
+    glVertex3f(e.x/10, e.y/10, 0.01);
+    glVertex3f(v2.x/10, v2.y/10, 0.01);
+    glVertex3f(e.x/10, e.y/10, 0.01);
+}
+
 //
 //void join(seg_t &s1, seg_t &s2,cont_t &c,vec2 v,float r){
 //    float a;

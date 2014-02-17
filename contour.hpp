@@ -21,6 +21,7 @@
 //void showclosed(drawing_t &d);
 //void showsegments(drawing_t &d);
 void displaycontour(contur* c);
+void arrow(glm::vec2,glm::vec2);
 //bool intersec(seg_t s1, seg_t s2, float &p, float &t);
 //void offset(layer_t &c,float);
 //void join(seg_t &s1, seg_t &s2,cont_t &c,glm::vec2,float);
