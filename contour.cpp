@@ -207,6 +207,8 @@ void displaycontour(contur* c){
         
         glColor3f(1, 0, 0);
         arrow(c->start(),c->start_tan());
+        //glColor3f(0, 1, 0);
+        //arrow(c->end(),c->end_tan());
 
     }while(c->step() != begin);
 }

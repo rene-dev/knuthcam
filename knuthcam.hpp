@@ -131,7 +131,7 @@ class seg_line: public seg_t{
     }
                
     glm::vec2 end_tan(){
-        return(glm::normalize(e - s));
+        return(glm::normalize(e - s)+e);
     }
     void destroy(){
         delete(this);
@@ -231,7 +231,7 @@ public:
     }
                
     glm::vec2 end_tan(){
-        return(glm::normalize(glm::rotate(s - m, (t == cw)?(90.0f):(-90.0f))));
+        return(glm::normalize(glm::rotate(e - m, (t == ccw)?(90.0f):(-90.0f)))+e);
     }
                
 
