@@ -224,14 +224,7 @@ public:
     }
     
     float angle(){
-        glm::vec2 v1, v2;
-        //std::cout << "ang: ("<< start().x << "/" << start().y << ")"<< "/(" << end().x << "/" << end().y << ") -> ("<< next()->start().x << "/" << next()->start().y << ")"<< "/(" << next()->end().x << "/" << next()->end().y << ")";
-        v1 = curr()->end_tan();
-        v2 = next()->start_tan();
-        float a;
-        a = seg_t::angle2(v1, v2);
-            
-        return(a);
+        return seg_t::angle(curr()->end_tan(), next()->start_tan());
     }
     
     bool concave(){
@@ -252,7 +245,7 @@ public:
         seg_t* begin = curr();
         do{
             a += angle(); // seg -> seg
-            a += seg_t::angle2(curr()->start_tan(), curr()->end_tan()); // seg
+            a += seg_t::angle(curr()->start_tan(), curr()->end_tan()); // seg
         }while(step() != begin);
         if(a <= 0){
             return(true);

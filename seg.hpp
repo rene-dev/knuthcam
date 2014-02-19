@@ -20,8 +20,8 @@ public:
         misc,
         none
     };
-    static float angle2(glm::vec2, glm::vec2);
-    static float angle1(glm::vec2);
+    static float angle(glm::vec2, glm::vec2);
+    static float angle(glm::vec2);
     static bool near(glm::vec2, glm::vec2);
 protected:
     seg_t* l[2];
@@ -187,7 +187,7 @@ public:
         this->m = m;
     }
     float angle(){
-        float a = angle2(s - m, e - m);
+        float a = seg_t::angle(s - m, e - m);
         if(a < 0.0f){
             a += 360.0f;
         }
