@@ -255,18 +255,20 @@ public:
     
     seg_t* join(float r){
         seg_t* s = 0;
-        if((angle() > 0.01f && r > 0) || (angle() < -0.01f && r <= 0)){
-            seg_line* l1 = new seg_line(curr()->offset_end(r), curr()->end());
-            seg_line* l2 = new seg_line(curr()->end(), next()->offset_start(r));
-            l1->link(!next_seg, l2);
-            l1->link(next_seg, l2);
-            l2->link(!next_seg, l1);
-            l2->link(next_seg, l1);
-            s = l1;
-        }
-        else if(fabsf(angle()) > 0.01f){
-            seg_arc* a = new seg_arc(r >= 0, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
-            s = a;
+        if(!seg_t::near(curr()->offset_end(r), next()->offset_start(r))){
+            if((angle() > 0.0f && r > 0) || (angle() < -0.0f && r < 0)){
+                seg_line* l1 = new seg_line(curr()->offset_end(r), curr()->end());
+                seg_line* l2 = new seg_line(curr()->end(), next()->offset_start(r));
+                l1->link(!next_seg, l2);
+                l1->link(next_seg, l2);
+                l2->link(!next_seg, l1);
+                l2->link(next_seg, l1);
+                s = l1;
+            }
+            else{
+                seg_arc* a = new seg_arc(r >= 0, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
+                s = a;
+            }
         }
         return(s);
     };
