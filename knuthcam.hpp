@@ -270,6 +270,10 @@ private:
     bool next_seg;
     
 public:
+    enum{
+        toolpath,
+        input
+    } ctype;
     contur(){
         seg = 0;
         s = 0;
@@ -624,6 +628,7 @@ public:
         std::vector<contur> newconts;
         for(contur c : conts){
             contur newcont;
+            newcont.ctype = contur::toolpath;
             seg_t* begin = c.curr();
             do{
                 newcont << c.offset(r);
@@ -644,6 +649,7 @@ public:
         for(seg_t *s1 : segments){
             if(!s1->used){
                 contur c;
+                c.ctype = contur::input;
                 s1->used = true;
                 c << s1;
                 //cout << "neu mit:" << to_string(s1.start) << to_string(s1.end) << endl;

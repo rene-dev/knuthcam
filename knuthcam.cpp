@@ -233,20 +233,8 @@ int main(int argc, char *argv[]){
         glBegin(GL_LINES);
     	for(layer &l : d.layers){
             for(contur &c : l.conts){
-//                switch (c.type) {
-//                    case cont_t::toolpath:
-//                        glColor3f(0, 1, 0);
-//                        break;
-//                    case cont_t::ocont_t:
-//                        glColor3f(1, 0, 0);
-//                        break;
-//                    case cont_t::ccont_t:
-                        glColor3f(1, 1, 1);
-//                        break;
-//                    default:
-//                        break;
-//                }
-                displaycontour(&c);
+                if(c.ctype == contur::toolpath || c.ctype == contur::input)
+                    displaycontour(&c);
             }
         }
         glEnd();

@@ -189,10 +189,11 @@ using glm::rotate;
 //}
 //
 void displaycontour(contur* c){
+    glm::vec3 color[] = {glm::vec3(0,1,0),glm::vec3(1,1,1)};
     seg_t* begin = c->curr();
     vec2 p;
     do{
-        glColor3f(1, 1, 1);
+        glColor3fv(glm::value_ptr(color[c->ctype]));
         p = c->start();
         glVertex3f(p.x/10, p.y/10, 0);
         if(c->complex()){
@@ -205,8 +206,8 @@ void displaycontour(contur* c){
         p = c->end();
         glVertex3f(p.x/10, p.y/10, 0);
         
-        glColor3f(1, 0, 0);
-        arrow(c->start(),c->start_tan());
+        //glColor3f(1, 0, 0);
+        //arrow(c->start(),c->start_tan());
         //glColor3f(0, 1, 0);
         //arrow(c->end(),c->end_tan());
 
