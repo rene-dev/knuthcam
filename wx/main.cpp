@@ -115,7 +115,7 @@ void glview::Render()
 class Sim: public wxApp
 {
     virtual bool OnInit();
-    wxGLCanvas * glcanvas;
+    //wxGLCanvas * glcanvas;
 };
 IMPLEMENT_APP(Sim)
 
