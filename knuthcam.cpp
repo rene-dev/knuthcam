@@ -58,7 +58,7 @@ float angle1(glm::vec2 v){
 }
 
 bool near(glm::vec2 v1, glm::vec2 v2){
-    if(abs(length(v1 - v2)) < tolerance){
+    if(fabsf(length(v1 - v2)) < tolerance){
         return(true);
     }
     return(false);

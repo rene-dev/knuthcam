@@ -8,7 +8,7 @@
 #include <string>
 #include <iostream>
 
-#define tolerance 0.005 // konturfehler
+#define tolerance 0.005f // konturfehler
 float angle2(glm::vec2 v1, glm::vec2 v2);
 float angle1(glm::vec2 v);
 bool near(glm::vec2 v1, glm::vec2 v2);
@@ -99,6 +99,7 @@ public:
     virtual void show() = 0;
     virtual void reverse() = 0;
     virtual float length() = 0;
+    virtual float angle() = 0;
     virtual bool complex() = 0;
     virtual glm::vec2 points(float t) = 0;
     virtual glm::vec2 start_tan() = 0;
@@ -129,7 +130,7 @@ class seg_line: public seg_t{
     }
     
     float length(){
-        return(fabs(glm::length(e - s)));
+        return(fabsf(glm::length(e - s)));
     }
     
     bool complex(){
@@ -137,16 +138,16 @@ class seg_line: public seg_t{
     }
     
     glm::vec2 points(float t){
-        t = fmodf(fabs(t), 1);
+        t = fmodf(fabsf(t), 1);
         return(s + t * (e - s));
     }
                
     glm::vec2 start_tan(){
-        return(glm::normalize(e - s)+s);
+        return(glm::normalize(e - s));
     }
                
     glm::vec2 end_tan(){
-        return(glm::normalize(e - s)+e);
+        return(glm::normalize(e - s));
     }
     void destroy(){
         delete(this);
@@ -165,6 +166,10 @@ class seg_line: public seg_t{
         glm::vec2 end = offset_end(r);
         seg_t* newseg = new seg_line(start,end);
         return newseg;
+    }
+    
+    float angle(){
+        return(0.0f);
     }
 };
 
@@ -198,14 +203,16 @@ public:
     }
     float angle(){
         float a = angle2(s - m, e - m);
-        if(a < 0){
-            a += 360;
+        if(a < 0.0f){
+            a += 360.0f;
         }
         if(t == cw){
-            return(a-360);
+            return(a-360.0f);
+        }
+        if(a < 0.01f){
+            return(360.0f);
         }
         return(a);
-        //return(0.0f);
     }
     void show(){
         if(t == ccw){
@@ -228,7 +235,7 @@ public:
     }
     
     float length(){
-        return(fabs(glm::length(e - s)));
+        return(fabsf(glm::length(e - s)));
     }
     
     bool complex(){
@@ -237,16 +244,16 @@ public:
     
     glm::vec2 points(float t){
         
-        t = fmodf(fabs(t), 1);
+        t = fmodf(fabsf(t), 1);
         return(m + glm::rotate(s - m, angle() * t));
     }
                
     glm::vec2 start_tan(){
-        return(glm::normalize(glm::rotate(s - m, (t == ccw)?(90.0f):(-90.0f)))+s);
+        return(glm::normalize(glm::rotate(s - m, (t == ccw)?(90.0f):(-90.0f))));
     }
                
     glm::vec2 end_tan(){
-        return(glm::normalize(glm::rotate(e - m, (t == ccw)?(90.0f):(-90.0f)))+e);
+        return(glm::normalize(glm::rotate(e - m, (t == ccw)?(90.0f):(-90.0f))));
     }
                
 
@@ -266,10 +273,16 @@ public:
         glm::vec2 start = offset_start(r);
         glm::vec2 end = offset_end(r);
         seg_t* newseg = 0;
-        if(abs(glm::length(e-m)) > (t == cw ? r : -r)){
+        if(fabsf(glm::length(e-m)) > (t == cw ? -r : r)){
             newseg = new seg_arc(t == seg_t::cw, start, m, end);
         }
-        else if(abs(glm::length(e-m)) < (t == cw ? r : -r)){
+        else if(fabsf(glm::length(e-m)) < (t == cw ? -r : r)){
+            /*seg_t* t1 = new seg_line(start, this->mid());
+            seg_t* t2 = new seg_line(this->mid(), end);
+            t1->link(1, t2);
+            t1->link(0, t2);
+            t2->link(1, t1);
+            t2->link(0, t1);*/
             newseg = new seg_line(start, end);
         }
         return(newseg);
@@ -480,51 +493,12 @@ public:
     float angle(){
         glm::vec2 v1, v2;
         //std::cout << "ang: ("<< start().x << "/" << start().y << ")"<< "/(" << end().x << "/" << end().y << ") -> ("<< next()->start().x << "/" << next()->start().y << ")"<< "/(" << next()->end().x << "/" << next()->end().y << ")";
-        if(size() > 1){
-            switch(type()){
-                case seg_t::misc:
-                case seg_t::line:
-                    v1 =  end() - start();
-                break;
-                    
-                case seg_t::cw:
-                    v1 =  glm::rotate(end() - mid(), -90.0f);
-                break;
-                    
-                case seg_t::ccw:
-                    v1 =  glm::rotate(end() - mid(), 90.0f);
-                break;
-                    
-                case seg_t::none:
-                    return(NAN);
-                break;
-            }
+        v1 = curr()->end_tan();
+        v2 = next()->start_tan();
+        float a;
+        a = angle2(v1, v2);
             
-            switch(next()->type()){
-                case seg_t::misc:
-                case seg_t::line:
-                    v2 =  next()->end() - next()->start();
-                break;
-                    
-                case seg_t::cw:
-                    v2 =  glm::rotate(((seg_arc*)next())->start() - ((seg_arc*)next())->mid(), -90.0f);
-                break;
-                    
-                case seg_t::ccw:
-                    v2 =  glm::rotate(((seg_arc*)next())->start() - ((seg_arc*)next())->mid(), 90.0f);
-                break;
-                
-                case seg_t::none:
-                    return(NAN);
-                break;
-            }
-            
-            float a;
-            a = angle2(v1, v2);
-            
-            return(a);
-        }
-        return(NAN);
+        return(a);
     }
     
     bool concave(){
@@ -538,10 +512,14 @@ public:
     }
     
     bool cw(){
+        if(size() == 1){
+            return(curr()->angle() <= 0);
+        }
         float a = 0;
         seg_t* begin = curr();
         do{
-            a += angle();
+            a += angle(); // seg -> seg
+            a += angle2(curr()->start_tan(), curr()->end_tan()); // seg
         }while(step() != begin);
         if(a <= 0){
             return(true);
@@ -560,7 +538,7 @@ public:
             l2->link(next_seg, l1);
             s = l1;
         }
-        else if(fabs(angle()) > 0.01f){
+        else if(fabsf(angle()) > 0.01f){
             seg_arc* a = new seg_arc(1, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
             s = a;
         }
@@ -686,6 +664,7 @@ public:
                                 c << s2;
                                 //cout << "hallo2!" << endl;
                                 pos = s2->end();
+                                //pos = s2->start();
                                 sucess = true;
                             }
                         }

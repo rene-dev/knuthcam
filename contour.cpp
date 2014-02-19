@@ -122,42 +122,42 @@ using glm::rotate;
 //	}
 //}
 //
-//bool intersec(seg_t s1, seg_t s2, float &p, float &t){
-//	if(s1.type == seg_t::line && s2.type == seg_t::line){// line, line
-//		float xy, ab;
-//		bool partial = false;
-//		double denom = (s2.end.x - s2.end.y) * (s1.start.x - s1.start.y) - (s1.end.x - s1.end.y) * (s2.start.x - s2.start.y);
-//		if (denom == 0) {
-//			xy = -1;
-//			ab = -1;
-//		} else {
-//			xy = (s2.start.x * (s1.end.y - s2.end.y) + s2.start.y * (s2.end.x - s1.end.y) + s1.start.y * (s2.end.y - s2.end.x)) / denom;
-//			partial = xy >= 0 && xy <= 1;
-//			if (partial) {
-//				// no point calculating this unless xy is between 0 & 1
-//				ab = (s1.end.y * (s1.start.x - s2.start.y) + s2.end.y * (s1.start.y - s1.start.x) + s1.end.x * (s2.start.y - s1.start.y)) / denom; 
-//			}
-//		}
-//		if ( partial && (ab >= 0 && ab) <= 1) {
-//			ab = 1-ab;
-//			xy = 1-xy;
-//			p = xy;
-//			t = ab;
-//			return true;
-//		} 
-//		return false; 	
-//	}
-//	else if(s1.type != seg_t::line && s2.type != seg_t::line){// arc, arc
-//	
-//	}
-//	else if(s1.type != seg_t::line){// arc, line 
-//		
-//	}
-//	else{// arc, line
-//	
-//	}
-//	return(false);
-//}
+bool intersec(seg_t* s1, seg_t* s2, float &p, float &t){
+	if(s1->type() == seg_t::line && s2->type() == seg_t::line){// line, line
+		float xy, ab;
+		bool partial = false;
+		double denom = (s2->end().x - s2->end().y) * (s1->start().x - s1->start().y) - (s1->end().x - s1->end().y) * (s2->start().x - s2->start().y);
+		if (denom == 0) {
+			xy = -1;
+			ab = -1;
+		} else {
+			xy = (s2->start().x * (s1->end().y - s2->end().y) + s2->start().y * (s2->end().x - s1->end().y) + s1->start().y * (s2->end().y - s2->end().x)) / denom;
+			partial = xy >= 0 && xy <= 1;
+			if (partial) {
+				// no point calculating this unless xy is between 0 & 1
+				ab = (s1->end().y * (s1->start().x - s2->start().y) + s2->end().y * (s1->start().y - s1->start().x) + s1->end().x * (s2->start().y - s1->start().y)) / denom;
+			}
+		}
+		if ( partial && (ab >= 0 && ab) <= 1) {
+			ab = 1-ab;
+			xy = 1-xy;
+			p = xy;
+			t = ab;
+			return true;
+		} 
+		return false; 	
+	}
+	else if(s1->type() != seg_t::line && s2->type() != seg_t::line){// arc, arc
+	
+	}
+	else if(s1->type() != seg_t::line){// arc, line
+		
+	}
+	else{// arc, line
+	
+	}
+	return(false);
+}
 //
 //float angle(glm::vec2 v1, glm::vec2 v2){
 //    float a = atan2(v1.y, v1.x)/M_PI*180.0f;
@@ -192,8 +192,9 @@ void displaycontour(contur* c){
     glm::vec3 color[] = {glm::vec3(0,1,0),glm::vec3(1,1,1)};
     seg_t* begin = c->curr();
     vec2 p;
+    glColor3fv(glm::value_ptr(color[c->ctype] * 0.5f));
     do{
-        glColor3fv(glm::value_ptr(color[c->ctype]));
+        
         p = c->start();
         glVertex3f(p.x/10, p.y/10, 0);
         if(c->complex()){
@@ -206,10 +207,11 @@ void displaycontour(contur* c){
         p = c->end();
         glVertex3f(p.x/10, p.y/10, 0);
         
-        //glColor3f(1, 0, 0);
-        //arrow(c->start(),c->start_tan());
+        glColor3f(1, 0, 0);
+        arrow(c->start(),c->start_tan() + c->start());
         //glColor3f(0, 1, 0);
-        //arrow(c->end(),c->end_tan());
+        //arrow(c->end(),c->end_tan() + c->end());
+        glColor3fv(glm::value_ptr(color[c->ctype]));
 
     }while(c->step() != begin);
 }
