@@ -1,21 +1,21 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <dxflib/dl_dxf.h>
-#include <dxflib/dl_creationadapter.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtx/vector_angle.hpp>
+//#include <dxflib/dl_dxf.h>
+//#include <dxflib/dl_creationadapter.h>
+//#include <glm/glm.hpp>
+//#include <glm/gtc/quaternion.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtx/rotate_vector.hpp>
+//#include <glm/gtx/vector_angle.hpp>
 #include <GLFW/glfw3.h>
 
-#include "importexport.hpp"
+//#include "importexport.hpp"
 #include "DxfParser.hpp"
-#include "svg.hpp"
-#include "knuthcam.hpp"
+//#include "svg.hpp"
 #include "contour.hpp"
 #include "easygl.hpp"
+#include "knuthcam.hpp"
 
 using std::cout;
 using std::endl;
@@ -33,36 +33,6 @@ glm::mat4 modelview;
 GLfloat zbuf = 1;
 //glm::mat4 projection;
 easygl renderer;
-
-float angle2(glm::vec2 v1, glm::vec2 v2){
-    float a = atan2(v1.y, v1.x)/M_PI*180.0f;
-    float b = atan2(v2.y, v2.x)/M_PI*180.0f;
-    float c = b - a;
-    if(c > 180.0f){
-        c -= 360.0f;
-    }
-    else if(c < -180.0f){
-        c += 360.0f;
-    }
-    return(c);
-}
-float angle1(glm::vec2 v){
-    float a = atan2(v.y, v.x)/M_PI*180.0f;
-    if(a > 180.0f){
-        a -= 360.0f;
-    }
-    else if(a < -180.0f){
-        a += 360.0f;
-    }
-    return(a);
-}
-
-bool near(glm::vec2 v1, glm::vec2 v2){
-    if(fabsf(length(v1 - v2)) < tolerance){
-        return(true);
-    }
-    return(false);
-}
 
 static void error_callback(int error, const char* description)
 {
@@ -110,7 +80,7 @@ static void mousepos_callback(GLFWwindow* window, double xpos, double ypos)
 
 	if(drag && screen.z != 1)
 	{
-		glm::ivec2 diff = lastMouse - mouse;
+		//glm::ivec2 diff = lastMouse - mouse;
         glm::vec2 gldiff = (gllastmouse - glmouse);
         //cout << to_string(screen) << endl;
     	renderer.movement -= glm::vec3(gldiff,0);

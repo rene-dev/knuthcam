@@ -1,5 +1,4 @@
-#ifndef svg_h
-#define svg_h
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -19,5 +18,3 @@ using std::ofstream;
 //		int open(string s, drawing_t &d);
 //		int save(string s, drawing_t &d);
 //};
-
-#endif

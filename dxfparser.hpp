@@ -1,14 +1,13 @@
-#ifndef dxfparser_h
-#define dxfparser_h
+#pragma once
 
-#include <iostream>
-#include <string>
-#include <vector>
+//#include <iostream>
+//#include <string>
+//#include <vector>
 #include <dxflib/dl_dxf.h>
 #include <dxflib/dl_creationadapter.h>
 #include <glm/glm.hpp>
 
-#include "knuthcam.hpp"
+//#include "knuthcam.hpp"
 #include "importexport.hpp"
 
 class DxfParser : public DL_CreationAdapter, importexport{
@@ -72,5 +71,3 @@ class DxfParser : public DL_CreationAdapter, importexport{
 		//void setVariableDouble(const char*, double, int);
 		void endSequence();
 };
-
-#endif
