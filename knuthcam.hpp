@@ -277,13 +277,13 @@ public:
             newseg = new seg_arc(t == seg_t::cw, start, m, end);
         }
         else if(fabsf(glm::length(e-m)) < (t == cw ? -r : r)){
-            /*seg_t* t1 = new seg_line(start, this->mid());
+            seg_t* t1 = new seg_line(start, this->mid());
             seg_t* t2 = new seg_line(this->mid(), end);
             t1->link(1, t2);
             t1->link(0, t2);
             t2->link(1, t1);
-            t2->link(0, t1);*/
-            newseg = new seg_line(start, end);
+            t2->link(0, t1);
+            newseg = t1;//new seg_line(start, end);
         }
         return(newseg);
     }
@@ -539,7 +539,7 @@ public:
             s = l1;
         }
         else if(fabsf(angle()) > 0.01f){
-            seg_arc* a = new seg_arc(1, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
+            seg_arc* a = new seg_arc(r >= 0, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
             s = a;
         }
         return(s);

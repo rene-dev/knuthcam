@@ -175,7 +175,7 @@ int main(int argc, char *argv[]){
 //    d.max = glm::vec2(110, 110);
     for(layer &l : d.layers){
         l.findcontours();
-        l.offset(1);
+        l.offset(3);
         l.show();
     }
 
