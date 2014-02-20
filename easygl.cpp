@@ -16,7 +16,9 @@ using glm::quat;
 using glm::vec2;
 using glm::vec3;
 using glm::vec4;
+using glm::ivec2;
 using glm::lookAt;
+using glm::unProject;
 using glm::perspective;
 using glm::value_ptr;
 
@@ -42,10 +44,7 @@ void easygl::init()
 	fieldOfView = 60.0f;
 	near = 0.1f, far = 1000.0f;
 	aspectRatio = 1.0;
-
-	glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_LINE_SMOOTH);
-    //glLineWidth(2.0f);
+    drag = false;
 
     //sphere.load("sphere.stl", vec4(1.0f, 0.0f, 1.0f, 1.0f));
     for(layer &l : d.layers){
@@ -71,6 +70,11 @@ void easygl::draw()
 	aspectRatio = (float)viewportSize.x / (float)viewportSize.y;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.0f,0.0f,0.0f,0.0f);
+    //glEnable(GL_CULL_FACE);
+    //glEnable(GL_LINE_SMOOTH);
+    //glLineWidth(1.0f);
 
 	// camera
     glMatrixMode(GL_PROJECTION);
@@ -116,6 +120,7 @@ void easygl::draw()
 }
 
 void easygl::scroll(double offset){
+    glReadPixels(mouse.x,viewportSize.y - mouse.y,1,1,GL_DEPTH_COMPONENT,GL_FLOAT,&zbuf);
     fieldOfView = CLAMP(fieldOfView -= offset,1,150);
     //movement.z += offset;
     /*
@@ -126,6 +131,23 @@ void easygl::scroll(double offset){
     if (fieldOfView > 150) // do not let aperture >= 180
         fieldOfView = 150;
     */
+}
+
+void easygl::movemouse(double x, double y){
+    mouse = ivec2(x, y);
+    vec3 screen=vec3(x,viewportSize.y - y,zbuf);
+    vec3 pos= unProject(screen,dragmodelview,projection,vec4(0,0, viewportSize.x, viewportSize.y));
+    glmouse = vec2(pos.x,pos.y);
+	if(drag && screen.z != 1)
+	{
+        vec2 gldiff = (gllastmouse - glmouse);
+        movement -= glm::vec3(gldiff,0);
+	}else{
+        dragmodelview = modelview;
+        glReadPixels(x,viewportSize.y - y,1,1,GL_DEPTH_COMPONENT,GL_FLOAT,&zbuf);
+    }
+    gllastmouse = glmouse;
+	lastMouse = mouse;
 }
 
 void easygl::drawBox(GLdouble width, GLdouble height, GLdouble depth)

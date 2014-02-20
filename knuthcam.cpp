@@ -20,11 +20,6 @@ using glm::unProject;
 
 const float sensitivity = 0.01f; // mouse sensitivity
 
-int drag;
-ivec2 mouse, lastMouse;
-vec2 glmouse, gllastmouse;
-mat4 modelview;
-GLfloat zbuf = 1;
 easygl renderer;
 
 static void error_callback(int error, const char* description)
@@ -39,34 +34,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT)
-        drag = true;
+        renderer.drag = true;
     else if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT)
-        drag = false;
+        renderer.drag = false;
 }
 
 static void mousepos_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	mouse = ivec2(xpos, ypos);
-    vec3 screen=vec3(xpos,renderer.viewportSize.y - ypos,zbuf);
-    vec3 pos= unProject(screen,modelview,renderer.projection,vec4(0,0, renderer.viewportSize.x, renderer.viewportSize.y));
-    glmouse = vec2(pos.x,pos.y);
-
-	if(drag && screen.z != 1)
-	{
-        vec2 gldiff = (gllastmouse - glmouse);
-    	renderer.movement -= glm::vec3(gldiff,0);
-	}else{
-        modelview = renderer.modelview;
-        glReadPixels(xpos,renderer.viewportSize.y - ypos,1,1,GL_DEPTH_COMPONENT,GL_FLOAT,&zbuf);
-    }
-    gllastmouse = glmouse;
-	lastMouse = mouse;
-    
+    renderer.movemouse(xpos, ypos);
 }
 
 static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset)
 {
-    glReadPixels(mouse.x,renderer.viewportSize.y - mouse.y,1,1,GL_DEPTH_COMPONENT,GL_FLOAT,&zbuf);
     renderer.scroll(yoffset);
 }
 

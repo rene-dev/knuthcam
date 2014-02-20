@@ -33,14 +33,14 @@ GLview::~GLview()
 
 void GLview::OnLeftDown(wxMouseEvent& e)
 {
-	lastx = e.m_x;
-	lasty = e.m_y;
-	down = true;
+	//lastx = e.m_x;
+	//lasty = e.m_y;
+	renderer.drag = true;
 }
 
 void GLview::OnLeftUp(wxMouseEvent& e)
 {
-	down = false;
+	renderer.drag = false;
 }
 
 void GLview::OnMiddleDown(wxMouseEvent& e)
@@ -61,7 +61,11 @@ void GLview::OnRightUp(wxMouseEvent& e)
 
 void GLview::OnMotion(wxMouseEvent& e)
 {
-	if(down)
+    SetCurrent(*context);
+    renderer.movemouse(e.m_x, e.m_y);
+    Invalidate();
+
+/*	if(down)
 	{
 		float dx = lastx - e.m_x;
 		float dy = lasty - e.m_y;
@@ -73,7 +77,7 @@ void GLview::OnMotion(wxMouseEvent& e)
 		lasty = e.m_y;
         cout << "motion" << rotX << " " << rotY << endl;
 		Invalidate();
-	}
+	}*/
 }
 
 void GLview::Invalidate()
@@ -96,7 +100,6 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
     cout << "paint" << endl;
     SetCurrent(*context);
     wxPaintDC(this);
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     GetClientSize(&renderer.viewportSize.x, &renderer.viewportSize.y);
     renderer.draw();
 	glFlush();

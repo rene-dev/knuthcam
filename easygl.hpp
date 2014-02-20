@@ -45,7 +45,12 @@ public:
 	double fieldOfView;
 	double near, far;
 	double aspectRatio;
+    bool drag;
+    glm::mat4 dragmodelview;
+    GLfloat zbuf = 1;
     drawing d;
+    glm::ivec2 mouse, lastMouse;
+    glm::vec2 glmouse, gllastmouse;
 
 	easygl();
 	~easygl();
@@ -53,6 +58,7 @@ public:
 	void init();
 	void draw();
     void scroll(double);
+    void movemouse(double, double);
 
 private:
     const float speed = 1.0f; // movement speed
