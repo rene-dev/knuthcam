@@ -48,7 +48,7 @@ void easygl::init()
     //glLineWidth(2.0f);
 
     //sphere.load("sphere.stl", vec4(1.0f, 0.0f, 1.0f, 1.0f));
-    for(layer &l : d->layers){
+    for(layer &l : d.layers){
         l.findcontours();
         l.offset(1);
         l.show();
@@ -97,14 +97,14 @@ void easygl::draw()
     
     glColor3f(0.3f, 0, 0);
     glBegin(GL_QUADS);
-    glVertex3f(d->min.x/10, d->min.y/10, -0.01f);
-    glVertex3f(d->min.x/10, d->max.y/10, -0.01f);
-    glVertex3f(d->max.x/10, d->max.y/10, -0.01f);
-    glVertex3f(d->max.x/10, d->min.y/10, -0.01f);
+    glVertex3f(d.min.x/10, d.min.y/10, -0.01f);
+    glVertex3f(d.min.x/10, d.max.y/10, -0.01f);
+    glVertex3f(d.max.x/10, d.max.y/10, -0.01f);
+    glVertex3f(d.max.x/10, d.min.y/10, -0.01f);
     glEnd();
-    
+
     glBegin(GL_LINES);
-    for(layer &l : d->layers){
+    for(layer &l : d.layers){
         for(contur &c : l.conts){
             if(c.ctype == contur::toolpath || c.ctype == contur::input)
                 displaycontour(&c);

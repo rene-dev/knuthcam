@@ -72,15 +72,13 @@ static void scroll_callback(GLFWwindow * window, double xoffset, double yoffset)
 
 int main(int argc, char *argv[]){
     DxfParser parser;
-    drawing d;
-    renderer.d = &d;
 
     if(argc < 2){
         cout << "no file" << endl;
         return 0;
     }
     
-    if(!parser.open(argv[1], d)){
+    if(!parser.open(argv[1], renderer.d)){
         cout << "cannot open file" << endl;
     }
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
+#include "../easygl.hpp"
+#include "../DxfParser.hpp"
 
 //#include "mainframe.hpp"
 
@@ -11,6 +13,7 @@ public:
     ~GLview();
     
     wxGLContext* context;
+    easygl renderer;
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);

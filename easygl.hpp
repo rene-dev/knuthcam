@@ -45,7 +45,7 @@ public:
 	double fieldOfView;
 	double near, far;
 	double aspectRatio;
-    drawing* d;
+    drawing d;
 
 	easygl();
 	~easygl();

@@ -19,6 +19,14 @@ END_EVENT_TABLE()
 
 GLview::GLview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPosition,wxDefaultSize,0,wxT("das"),wxNullPalette){
     context = new wxGLContext(this);
+    DxfParser parser;
+    down = false;
+    
+    if(!parser.open("/Users/rene/dev/knuthcam/hase.dxf", renderer.d)){
+        cout << "cannot open file" << endl;
+    }
+    renderer.init();
+    cout << "layers:" << renderer.d.layers.size() << endl;
 }
 GLview::~GLview()
 {
@@ -77,8 +85,9 @@ void GLview::Invalidate()
 void GLview::OnWheel(wxMouseEvent& e)
 {
 	const float move = (float)e.m_wheelRotation / e.m_wheelDelta;
-	distance -= move;
-    cout << "scroll " << distance << endl;
+	//distance -= move;
+    //cout << "scroll " << distance << endl;
+    renderer.scroll(move);
 	Invalidate();
 }
 
@@ -88,7 +97,9 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
     cout << "paint" << endl;
     SetCurrent(*context);
     wxPaintDC(this);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    GetClientSize(&renderer.viewportSize.x, &renderer.viewportSize.y);
+    renderer.draw();
 	glFlush();
 	SwapBuffers();
 }
@@ -98,7 +109,7 @@ void GLview::OnSize(wxSizeEvent& event)
 	int w, h;
 	GetClientSize(&w, &h);
     cout << "resize " << w << " " << h << endl;
-    SetCurrent(*context);
+    //SetCurrent(*context);
     //glGLviewport(0, 0, (GLint) w, (GLint) h);
 }
 
