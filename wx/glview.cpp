@@ -17,10 +17,9 @@ EVT_MOTION(GLview::OnMotion)
 EVT_MOUSEWHEEL(GLview::OnWheel)
 END_EVENT_TABLE()
 
-GLview::GLview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPosition,wxDefaultSize,0,wxT("das"),wxNullPalette){
+GLview::GLview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPosition,wxDefaultSize,0,wxT("glview"),wxNullPalette){
     context = new wxGLContext(this);
     DxfParser parser;
-    down = false;
     
     if(!parser.open(SRCDIR"/../hase.dxf", renderer.d)){
         cout << "cannot open file" << endl;
@@ -64,20 +63,6 @@ void GLview::OnMotion(wxMouseEvent& e)
     SetCurrent(*context);
     renderer.movemouse(e.m_x, e.m_y);
     Invalidate();
-
-/*	if(down)
-	{
-		float dx = lastx - e.m_x;
-		float dy = lasty - e.m_y;
-        
-		rotX -= dx;
-		rotY -= dy;
-        
-		lastx = e.m_x;
-		lasty = e.m_y;
-        cout << "motion" << rotX << " " << rotY << endl;
-		Invalidate();
-	}*/
 }
 
 void GLview::Invalidate()
@@ -97,7 +82,7 @@ void GLview::OnWheel(wxMouseEvent& e)
 
 void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {
-    cout << "paint" << endl;
+    //cout << "paint" << endl;
     SetCurrent(*context);
     wxPaintDC(this);
     GetClientSize(&renderer.viewportSize.x, &renderer.viewportSize.y);
@@ -108,9 +93,9 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
 
 void GLview::OnSize(wxSizeEvent& event)
 {
-	int w, h;
-	GetClientSize(&w, &h);
-    cout << "resize " << w << " " << h << endl;
+	//int w, h;
+	//GetClientSize(&w, &h);
+    //cout << "resize " << w << " " << h << endl;
     //SetCurrent(*context);
     //glGLviewport(0, 0, (GLint) w, (GLint) h);
 }

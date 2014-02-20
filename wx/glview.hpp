@@ -2,7 +2,7 @@
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 #include "../easygl.hpp"
-#include "../DxfParser.hpp"
+#include "../dxfparser.hpp"
 
 //#include "mainframe.hpp"
 
@@ -29,11 +29,5 @@ public:
     
 	void Invalidate();
 private:
-	float rotX;
-	float rotY;
-	float distance;
-	long lastx;
-	long lasty;
-	bool down;
 	DECLARE_EVENT_TABLE()
 };

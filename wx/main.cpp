@@ -42,7 +42,7 @@ public:
 
 MyFrame::MyFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *sizermain = new wxBoxSizer(wxVERTICAL);
-    wxSplitterWindow *splittermain = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(800,600),wxSP_LIVE_UPDATE|wxSP_3DSASH);
+    wxSplitterWindow *splittermain = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
     splittermain->SetSashGravity(0);
     splittermain->SetMinimumPaneSize(100); // Smalest size the
     sizermain->Add(splittermain, 1,wxEXPAND,0);
