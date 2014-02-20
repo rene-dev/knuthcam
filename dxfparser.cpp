@@ -29,10 +29,10 @@ void DxfParser::addLayer(const DL_LayerData& d) {
 //void DxfParser::endBlock() {cout << __func__ << endl;}
 
 void DxfParser::minmax (vec2 v){
-    drw->min.x = fmin(drw->min.x,v.x);
-    drw->min.y = fmin(drw->min.y,v.y);
-    drw->max.x = fmax(drw->max.x,v.x);
-    drw->max.y = fmax(drw->max.y,v.y);
+    drw->min.x = fminf(drw->min.x,v.x);
+    drw->min.y = fminf(drw->min.y,v.y);
+    drw->max.x = fmaxf(drw->max.x,v.x);
+    drw->max.y = fmaxf(drw->max.y,v.y);
 }
 
 void DxfParser::addPoint(const DL_PointData&) {cout << __func__ << endl;}

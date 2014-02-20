@@ -3,10 +3,12 @@
 using std::cout;
 using std::endl;
 using glm::vec2;
+using glm::vec3;
 using glm::length;
 using glm::to_string;
 using glm::normalize;
 using glm::rotate;
+using glm::value_ptr;
 
 bool intersec(seg_t* s1, seg_t* s2, float &p, float &t){
 	if(s1->type() == seg_t::line && s2->type() == seg_t::line){// line, line
@@ -46,10 +48,10 @@ bool intersec(seg_t* s1, seg_t* s2, float &p, float &t){
 }
 
 void displaycontour(contur* c){
-    glm::vec3 color[] = {glm::vec3(0,1,0),glm::vec3(1,1,1)};
+    vec3 color[] = {vec3(0,1,0),vec3(1,1,1)};
     seg_t* begin = c->curr();
     vec2 p;
-    glColor3fv(glm::value_ptr(color[c->ctype] * 0.5f));
+    glColor3fv(value_ptr(color[c->ctype] * 0.5f));
     do{
         
         p = c->start();
@@ -70,14 +72,14 @@ void displaycontour(contur* c){
         arrow(c->curr()->points(1.0f),c->curr()->tans(1.0f) + c->curr()->points(1.0f));   
         //glColor3f(0, 1, 0);
         //arrow(c->end(),c->end_tan() + c->end());
-        glColor3fv(glm::value_ptr(color[c->ctype]));
+        glColor3fv(value_ptr(color[c->ctype]));
 
     }while(c->step() != begin);
 }
 
-void arrow(glm::vec2 s,glm::vec2 e){
-    vec2 v1 = 0.5f*glm::rotate(e-s, -45.0f+180.0f)+e;
-    vec2 v2 = 0.5f*glm::rotate(e-s, 45.0f+180.0f)+e;
+void arrow(vec2 s,vec2 e){
+    vec2 v1 = 0.5f*rotate(e-s, -45.0f+180.0f)+e;
+    vec2 v2 = 0.5f*rotate(e-s, 45.0f+180.0f)+e;
     glVertex3f(s.x/10, s.y/10, 0.01);
     glVertex3f(e.x/10, e.y/10, 0.01);
     

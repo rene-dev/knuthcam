@@ -23,6 +23,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <math.h>
+#include "knuthcam.hpp"
+#include "contour.hpp"
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
 
@@ -43,12 +45,13 @@ public:
 	double fieldOfView;
 	double near, far;
 	double aspectRatio;
+    drawing* d;
 
 	easygl();
 	~easygl();
 
 	void init();
-	void draw(float period);
+	void draw();
     void scroll(double);
 
 private:

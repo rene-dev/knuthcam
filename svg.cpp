@@ -5,6 +5,11 @@
 //	return(0);
 //}
 
+using std::cout;
+using std::endl;
+using std::string;
+using std::ofstream;
+
 /*
 int svg::save(string s, drawing_t &d){
 	ofstream myfile;
