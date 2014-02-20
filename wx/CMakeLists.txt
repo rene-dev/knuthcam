@@ -16,6 +16,7 @@ glview.cpp glview.hpp
 ../easygl.cpp ../easygl.hpp
 ../svg.cpp ../svg.hpp
 ../knuthcam.hpp
+../seg.cpp ../seg.hpp
 )
 
 set(wxWidgets_CONFIGURATION mswu)
