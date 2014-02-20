@@ -5,9 +5,7 @@
 //  Created by Rene, ands on 14/11/13.
 //  Copyright (c) 2013 Rene, ands. All rights reserved.
 //
-
-#ifndef kinsim_easygl_h
-#define kinsim_easygl_h
+#pragma once
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -61,5 +59,3 @@ private:
 	void drawAxis();
 	void drawGrid();
 };
-
-#endif

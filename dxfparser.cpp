@@ -4,15 +4,14 @@ using std::cout;
 using std::endl;
 using glm::vec2;
 
-int DxfParser::open(string s, drawing_t &d){
-	drawing = &d;
-    drawing->min = vec2(10,10);
-    drawing->max = vec2(10,10);
+int DxfParser::open(string s, drawing &d){
+	drw = &d;
+    drw->min = vec2(0,0);
+    drw->max = vec2(0,0);
 	return dxf.in(s,this);
 }
 
-
-int DxfParser::save(string s, drawing_t &d){
+int DxfParser::save(string s, drawing &d){
 	cout << "dxf export not implemented!" << endl;
 	return(0);
 }
@@ -22,73 +21,61 @@ void DxfParser::processCodeValuePair(unsigned int i, char* c) {
 }
 void DxfParser::addLayer(const DL_LayerData& d) {
 	//cout << __func__ << " " << d.name << endl;
-	layer_t l;
+	layer l;
 	l.name = d.name;
-	drawing->layers.push_back(l);
+	*drw << l;
 }
 //void DxfParser::addBlock(const DL_BlockData& b) {cout << __func__ << " " << b.name << endl;}
 //void DxfParser::endBlock() {cout << __func__ << endl;}
 
 void DxfParser::minmax (vec2 v){
-    drawing->min.x = fmin(drawing->min.x,v.x);
-    drawing->min.y = fmin(drawing->min.y,v.y);
-    drawing->max.x = fmax(drawing->max.x,v.x);
-    drawing->max.y = fmax(drawing->max.y,v.y);
+    drw->min.x = fmin(drw->min.x,v.x);
+    drw->min.y = fmin(drw->min.y,v.y);
+    drw->max.x = fmax(drw->max.x,v.x);
+    drw->max.y = fmax(drw->max.y,v.y);
 }
 
 void DxfParser::addPoint(const DL_PointData&) {cout << __func__ << endl;}
+
 void DxfParser::addLine(const DL_LineData& d) {
 	//cout << __func__ << endl;
-    DL_Attributes a = getAttributes();
-	string layer = a.getLayer();
-	seg_t s;
-	s.type = seg_t::line;
-	s.start = vec2(d.x1,d.y1);
-	s.end = vec2(d.x2,d.y2);
-    //TODO: klappt noch nicht
-    minmax(s.start);
-    minmax(s.end);
-	s.used = false;
-	for(layer_t &l : drawing->layers){
-		if(l.name == layer){
-			l.seg_tments.segments.push_back(s);
-			return;
-		}
-	}
-	//cout << "layer " << layer << " not found" << endl;        
+	seg_t *s = new seg_line(vec2(d.x1,d.y1), vec2(d.x2,d.y2));
+    minmax(s->start());
+    minmax(s->end());
 	//cout << "line on layer " << a.getLayer() << " from " << d.x1 << "," << d.y1 << " to " << d.x2 << "," << d.y2 << endl;
+    *drw << getAttributes().getLayer() << s;
 }
+
 void DxfParser::addArc(const DL_ArcData& d) {
 	//cout << __func__ << endl;
 	//cout << d.cx << "," << d.cy << " r:" << d.radius << " start:" << d.angle1 << " end:" << d.angle2 << " " << endl;
-	DL_Attributes a = getAttributes();
-	string layer = a.getLayer();
-	seg_t s;
-	s.type = seg_t::ccw;
-	s.mid = vec2(d.cx,d.cy);
-	s.r = d.radius;
+    vec2 t1;
+	t1.x = cos(d.angle1 / 180.0 * M_PI) * d.radius;
+	t1.y = sin(d.angle1 / 180.0 * M_PI) * d.radius;
 
-	vec2 t;
-	t.x = cos(d.angle1 / 180.0 * M_PI) * s.r;
-	t.y = sin(d.angle1 / 180.0 * M_PI) * s.r;        
-	s.start = s.mid + t;
+    vec2 t2;
+	t2.x = cos(d.angle2 / 180.0 * M_PI) * d.radius;
+	t2.y = sin(d.angle2 / 180.0 * M_PI) * d.radius;
 
-	t.x = cos(d.angle2 / 180.0 * M_PI) * s.r;
-	t.y = sin(d.angle2 / 180.0 * M_PI) * s.r;  
-	s.end = s.mid + t;
-
-	s.used = false;
-
-	for(layer_t &l : drawing->layers){
-		if(l.name == layer){
-			l.seg_tments.segments.push_back(s);
-			return;
-		}
-	}
-
+    vec2 mid = vec2(d.cx,d.cy);
+    vec2 start = mid + t1;
+    vec2 end = mid + t2;
+    seg_t *s = new seg_arc(false, start, mid, end);
+    minmax(start);
+    minmax(end);
+    minmax(mid);
+    *drw << getAttributes().getLayer() << s;
 }
 
-void DxfParser::addCircle(const DL_CircleData&) {cout << __func__ << endl;}
+void DxfParser::addCircle(const DL_CircleData& d) {
+    //cout << __func__ << endl;
+    vec2 mid = vec2(d.cx,d.cy);
+    vec2 startend = mid + vec2(d.radius,0);
+    seg_t *s = new seg_arc(false, startend, mid, startend);
+    minmax(startend);
+    *drw << getAttributes().getLayer() << s;
+    
+}
 void DxfParser::addEllipse(const DL_EllipseData&) {cout << __func__ << endl;}
 void DxfParser::addPolyline(const DL_PolylineData&) {cout << __func__ << endl;}
 void DxfParser::addVertex(const DL_VertexData&) {cout << __func__ << endl;}

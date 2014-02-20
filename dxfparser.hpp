@@ -1,24 +1,25 @@
-#ifndef dxfparser_h
-#define dxfparser_h
+#pragma once
 
-#include <iostream>
-#include <string>
-#include <vector>
+//#include <iostream>
+//#include <string>
+//#include <vector>
 #include <dxflib/dl_dxf.h>
 #include <dxflib/dl_creationadapter.h>
 #include <glm/glm.hpp>
 
-#include "knuthcam.hpp"
+//#include "knuthcam.hpp"
 #include "importexport.hpp"
 
 class DxfParser : public DL_CreationAdapter, importexport{
 	public:
-		drawing_t *drawing;
-		int open(string s, drawing_t &d);
-		int save(string s, drawing_t &d);
+        drawing *drw;
+		int open(string s, drawing &d);
+		int save(string s, drawing &d);
 	private:
 		DL_Dxf dxf;
         void minmax (glm::vec2);
+    
+        //DL_CreationAdapter
 		void processCodeValuePair(unsigned int, char*);
 		void addLayer(const DL_LayerData&);
 		//void addBlock(const DL_BlockData&);
@@ -70,5 +71,3 @@ class DxfParser : public DL_CreationAdapter, importexport{
 		//void setVariableDouble(const char*, double, int);
 		void endSequence();
 };
-
-#endif
