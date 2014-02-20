@@ -34,11 +34,12 @@ wxString SearchResultsList::OnGetItemText(long item, long column) const{
 }
 
 class glview: public wxGLCanvas {
-        void Render();
 public:
     glview(wxPanel* parent);
+    wxGLContext* context;
     //easygl renderer;
-    void Paintit(wxPaintEvent& event);
+    void OnPaint(wxPaintEvent& event);
+    void OnMove(wxMouseEvent& e);
     void init();
 protected:
     DECLARE_EVENT_TABLE()
@@ -79,30 +80,27 @@ class MyFrame : public wxFrame
 };
  
 BEGIN_EVENT_TABLE(glview, wxGLCanvas)
-    EVT_PAINT(glview::Paintit)
+    EVT_PAINT(glview::OnPaint)
+    EVT_MOTION(glview::OnMove)
+    //EVT_MOUSEWHEEL(glview::OnWheel)
 END_EVENT_TABLE()
  
-glview::glview(wxPanel *parent):wxGLCanvas(parent, wxID_ANY, wxDefaultPosition, wxSize(100,100), 0, wxT("GLCanvas")){
+glview::glview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPosition,wxDefaultSize,0,wxT("das"),wxNullPalette){
     init();
-    int argc = 1;
-    char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
-}
- 
- 
-void glview::Paintit(wxPaintEvent& WXUNUSED(event)){
-    Render();
+    context = new wxGLContext(this);
+    //SetCurrent(*context);
+    //int argc = 1;
+    //char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
 }
 
-void glview::init(){
-    //renderer.init();
-    //renderer.currentPath = gcode("/Users/rene/dev/kinsim/kinsim/kinsim/gcode.ngc");
-    //interpol(renderer.currentPath);
-    //renderer.robotState = &renderer.currentPath->pos;
+void glview::OnMove(wxMouseEvent& e){
+    std::cout << "move " << e.m_x << std::endl << std::flush;
 }
  
-void glview::Render()
-{
-    SetCurrent();
+ 
+void glview::OnPaint(wxPaintEvent& WXUNUSED(event)){
+    std::cout << "render" << std::endl << std::flush;
+    SetCurrent(*context);
     wxPaintDC(this);
     //renderer.viewportSize.x = (GLint)GetSize().x;
     //renderer.viewportSize.y = (GLint)GetSize().y;
@@ -111,6 +109,12 @@ void glview::Render()
     SwapBuffers();
 }
 
+void glview::init(){
+    //renderer.init();
+    //renderer.currentPath = gcode("/Users/rene/dev/kinsim/kinsim/kinsim/gcode.ngc");
+    //interpol(renderer.currentPath);
+    //renderer.robotState = &renderer.currentPath->pos;
+}
 
 class Sim: public wxApp
 {
@@ -124,7 +128,7 @@ bool Sim::OnInit()
 {        
     //wxBoxSizer * box = new wxBoxSizer(wxHORIZONTAL);
     //wxFrame *frame = new wxFrame((wxFrame *)NULL, -1,  wxT("Sim"), wxDefaultPosition, wxSize(800,600));
-    MyFrame *frame = new MyFrame(wxT("Splitter-Sizer App"));
+    MyFrame *frame = new MyFrame(wxT("KnuthCAM"));
     //glcanvas = new glview(frame);
     //wxSplitterWindow *splittermain = new wxSplitterWindow(frame,wxID_ANY);
     //splittermain->Add(glcanvas1,wxEXPAND,0);
