@@ -88,45 +88,7 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
     cout << "paint" << endl;
     SetCurrent(*context);
     wxPaintDC(this);
-    //renderer.viewportSize.x = (GLint)GetSize().x;
-    //renderer.viewportSize.y = (GLint)GetSize().y;
-    //renderer.draw(1);
-
-	// Init OpenGL once, but after SetCurrent
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-    
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	int width = 0;
-	int height = 0;
-	GetClientSize(&width, &height);
-	if(height==0) height = 1;
-	const double aspectRatio = (float) width / height;
-	const double fieldOfGLview = 45.0;
-    
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	const double zNear = 1.0;
-	const double zFar = 1000.0;
-	GLfloat aspect = float(width)/float(height);
-	GLfloat fH = tan( float(fieldOfGLview / 360.0f * 3.14159f) ) * zNear;
-	GLfloat fW = fH * aspect;
-	glFrustum( -fW, fW, -fH, fH, zNear, zFar );
-    
-	
-	//glMatrixMode(GL_MODELGLview);
-	glLoadIdentity();
-    
-	// position GLviewer
-	glTranslatef(0.0f, 0.0f, -distance);
-	glRotatef(rotY, 1.0f, 0.0f, 0.0f);
-	glRotatef(rotX, 0.0f, 1.0f, 0.0f);
-    
-	/* clear color and depth buffers */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
 	glFlush();
 	SwapBuffers();
 }
