@@ -12,6 +12,7 @@ find_library(DXFLIB dxflib REQUIRED)
 set(SRC_LIST
 main.cpp
 glview.cpp glview.hpp
+mainframe.cpp mainframe.hpp
 ../contour.cpp ../contour.hpp
 ../dxfparser.cpp ../dxfparser.hpp
 ../easygl.cpp ../easygl.hpp
