@@ -93,6 +93,8 @@ public:
     virtual seg_t* offset(float r) = 0;
     virtual glm::vec2 offset_start(float r) = 0;
     virtual glm::vec2 offset_end(float r) = 0;
+    virtual glm::vec2 min() = 0;
+    virtual glm::vec2 max() = 0;
 };
 
 class seg_line: public seg_t{
@@ -155,6 +157,14 @@ class seg_line: public seg_t{
     
     float angle(){
         return(0.0f);
+    }
+    
+    glm::vec2 min(){
+        return(glm::vec2(fminf(s.x, e.x), fminf(s.y, e.y)));
+    }
+    
+    glm::vec2 max(){
+        return(glm::vec2(fmaxf(s.x, e.x), fmaxf(s.y, e.y)));
     }
 };
 
@@ -272,5 +282,11 @@ public:
         return(newseg);
     }
     
-
+    glm::vec2 min(){
+        return(glm::vec2(fminf(s.x, e.x), fminf(s.y, e.y)));
+    }
+    
+    glm::vec2 max(){
+        return(glm::vec2(fmaxf(s.x, e.x), fmaxf(s.y, e.y)));
+    }
 };
