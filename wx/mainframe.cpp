@@ -1,14 +1,26 @@
 #include "mainframe.hpp"
 #include <wx/bitmap.h>
+#include <wx/artprov.h>
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *mainsizer = new wxBoxSizer(wxVERTICAL);
     wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
     wxImage::AddHandler(new wxGIFHandler);
-    wxBitmap openbitmap = wxBitmap(wxImage(SRCDIR"/images/tool_open.gif"));
+    wxBitmap axisxbitmap = wxBitmap(wxImage(SRCDIR"/images/tool_axis_x.gif"));
+    wxBitmap axisybitmap = wxBitmap(wxImage(SRCDIR"/images/tool_axis_y.gif"));
+    wxBitmap axiszbitmap = wxBitmap(wxImage(SRCDIR"/images/tool_axis_z.gif"));
+    wxBitmap axisz2bitmap = wxBitmap(wxImage(SRCDIR"/images/tool_axis_z2.gif"));
+    wxBitmap axispbitmap = wxBitmap(wxImage(SRCDIR"/images/tool_axis_p.gif"));
     
     wxToolBar *toolbar = CreateToolBar();
-    toolbar->AddTool(wxID_OPEN, wxEmptyString,openbitmap);
+    toolbar->SetToolBitmapSize(wxSize(24, 24));
+    toolbar->AddTool(wxID_OPEN, wxT("open"),wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(24, 24)));
+    toolbar->AddStretchableSpace();
+    toolbar->AddTool(wxID_OPEN, wxEmptyString,axiszbitmap);
+    toolbar->AddTool(wxID_OPEN, wxEmptyString,axisz2bitmap);
+    toolbar->AddTool(wxID_OPEN, wxEmptyString,axisxbitmap);
+    toolbar->AddTool(wxID_OPEN, wxEmptyString,axisybitmap);
+    toolbar->AddTool(wxID_OPEN, wxEmptyString,axispbitmap);
     toolbar->Realize();
     
     mainsplitter->SetSashGravity(0);
