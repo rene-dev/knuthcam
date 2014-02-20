@@ -87,6 +87,7 @@ public:
     virtual float angle() = 0;
     virtual bool complex() = 0;
     virtual glm::vec2 points(float t) = 0;
+    virtual glm::vec2 tans(float t) = 0;
     virtual glm::vec2 start_tan() = 0;
     virtual glm::vec2 end_tan() = 0;
     virtual void destroy() = 0;
@@ -125,17 +126,27 @@ class seg_line: public seg_t{
     }
     
     glm::vec2 points(float t){
-        t = fmodf(fabsf(t), 1);
+        if(t < 0.0f){
+            t = 0.0f;
+        }
+        if(t > 1.0f){
+            t = 1.0f;
+        }
         return(s + t * (e - s));
     }
-               
+    
+    glm::vec2 tans(float t){
+        return(glm::normalize(e - s));
+    }
+    
     glm::vec2 start_tan(){
-        return(glm::normalize(e - s));
+        return(tans(0.0f));
     }
-               
+    
     glm::vec2 end_tan(){
-        return(glm::normalize(e - s));
+        return(tans(1.0f));
     }
+    
     void destroy(){
         delete(this);
     }
@@ -238,17 +249,26 @@ public:
     }
     
     glm::vec2 points(float t){
-        
-        t = fmodf(fabsf(t), 1);
+        if(t < 0.0f){
+            t = 0.0f;
+        }
+        if(t > 1.0f){
+            t = 1.0f;
+        }
         return(m + glm::rotate(s - m, angle() * t));
     }
-               
+    
+    glm::vec2 tans(float t){
+        glm::vec2 p = points(t);
+        return(glm::normalize(glm::rotate(p - m, (this->t == ccw)?(90.0f):(-90.0f))));
+    }
+    
     glm::vec2 start_tan(){
-        return(glm::normalize(glm::rotate(s - m, (t == ccw)?(90.0f):(-90.0f))));
+        return(tans(0.0f));
     }
                
     glm::vec2 end_tan(){
-        return(glm::normalize(glm::rotate(e - m, (t == ccw)?(90.0f):(-90.0f))));
+        return(tans(1.0f));
     }
 
     void destroy(){
@@ -283,6 +303,10 @@ public:
     }
     
     glm::vec2 min(){
+        glm::vec2 mi = m;
+        mi = glm::min(s, mi);
+        mi = glm::min(e, mi);
+        
         return(glm::vec2(fminf(s.x, e.x), fminf(s.y, e.y)));
     }
     

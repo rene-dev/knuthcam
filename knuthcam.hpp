@@ -16,7 +16,6 @@ typedef struct{
         outside
     }operation;
     float rpm;
-    bool spindlecw;
     float feed;
     float plunge;
     float zstart;

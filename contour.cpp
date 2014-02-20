@@ -65,7 +65,9 @@ void displaycontour(contur* c){
         glVertex3f(p.x/10, p.y/10, 0);
         
         glColor3f(1, 0, 0);
-        arrow(c->start(),c->start_tan() + c->start());
+        arrow(c->curr()->points(0.0f),c->curr()->tans(0.0f) + c->curr()->points(0.0f));
+        arrow(c->curr()->points(0.5f),c->curr()->tans(0.5f) + c->curr()->points(0.5f));
+        arrow(c->curr()->points(1.0f),c->curr()->tans(1.0f) + c->curr()->points(1.0f));   
         //glColor3f(0, 1, 0);
         //arrow(c->end(),c->end_tan() + c->end());
         glColor3fv(glm::value_ptr(color[c->ctype]));
