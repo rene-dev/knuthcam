@@ -1,30 +1,35 @@
 #include "mainframe.hpp"
+#include <wx/bitmap.h>
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
-    wxBoxSizer *sizermain = new wxBoxSizer(wxVERTICAL);
-    wxSplitterWindow *splittermain = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
-    splittermain->SetSashGravity(0);
-    splittermain->SetMinimumPaneSize(100); // Smalest size the
-    sizermain->Add(splittermain, 1,wxEXPAND,0);
+    wxBoxSizer *mainsizer = new wxBoxSizer(wxVERTICAL);
+    wxSplitterWindow *mainsplitter = new wxSplitterWindow(this,wxID_ANY,wxDefaultPosition, wxSize(1024,768),wxSP_LIVE_UPDATE|wxSP_3DSASH);
+    wxImage::AddHandler(new wxGIFHandler);
+    wxBitmap openbitmap = wxBitmap(wxImage(SRCDIR"/images/tool_open.gif"));
     
-    wxPanel *pnl1 = new wxPanel(splittermain, wxID_ANY);
+    wxToolBar *toolbar = CreateToolBar();
+    toolbar->AddTool(wxID_OPEN, wxEmptyString,openbitmap);
+    toolbar->Realize();
     
-    wxBoxSizer *txt1sizer = new wxBoxSizer(wxVERTICAL);
-    //wxTextCtrl *txt1 = new wxTextCtrl(pnl1, wxID_ANY);
-    //txt1sizer->Add(txt1, 1,wxEXPAND,0);
-    txt1sizer->Add(new SearchResultsList(pnl1), 1,wxEXPAND,0);
-    pnl1->SetSizer(txt1sizer);
+    mainsplitter->SetSashGravity(0);
+    mainsplitter->SetMinimumPaneSize(100);
+    mainsizer->Add(mainsplitter, 1,wxEXPAND,0);
     
+    //left
+    wxPanel *leftpanel = new wxPanel(mainsplitter, wxID_ANY);
+    wxBoxSizer *leftsizer = new wxBoxSizer(wxVERTICAL);
+    leftsizer->Add(new SearchResultsList(leftpanel), 1,wxEXPAND,0);
+    leftpanel->SetSizer(leftsizer);
     
-    wxPanel *pnl2 = new wxPanel(splittermain, wxID_ANY);
-    wxBoxSizer *txt2sizer = new wxBoxSizer(wxVERTICAL);
-    txt2sizer->Add(new GLview(pnl2), 1,wxEXPAND,0);
-    pnl2->SetSizer(txt2sizer);
+    //right
+    wxPanel *rightpanel = new wxPanel(mainsplitter, wxID_ANY);
+    wxBoxSizer *rightsizer = new wxBoxSizer(wxVERTICAL);
+    rightsizer->Add(new GLview(rightpanel), 1,wxEXPAND,0);
+    rightpanel->SetSizer(rightsizer);
     
-    splittermain->SplitVertically(pnl1, pnl2,200);
-    
-    this->SetSizer(sizermain);
-    sizermain->SetSizeHints(this);
+    mainsplitter->SplitVertically(leftpanel, rightpanel,200);
+    this->SetSizer(mainsizer);
+    mainsizer->SetSizeHints(this);
 }
 
 //Constructor, sets up virtual report list with 3 columns
