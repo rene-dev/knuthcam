@@ -1,10 +1,12 @@
 #include "glview.hpp"
 
+using std::cout;
+using std::endl;
+
 BEGIN_EVENT_TABLE(GLview, wxGLCanvas)
 EVT_SIZE(GLview::OnSize)
 EVT_PAINT(GLview::OnPaint)
 EVT_ERASE_BACKGROUND(GLview::OnEraseBackground)
-
 EVT_LEFT_DOWN(GLview::OnLeftDown)
 EVT_LEFT_UP(GLview::OnLeftUp)
 EVT_MIDDLE_DOWN(GLview::OnMiddleDown)
@@ -15,21 +17,8 @@ EVT_MOTION(GLview::OnMotion)
 EVT_MOUSEWHEEL(GLview::OnWheel)
 END_EVENT_TABLE()
 
-/*
-GLview::GLview(wxWindow *parent, Data* data, wxWindowID id,
-		   const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-: wxGLCanvas(parent, (wxGLCanvas*) NULL, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE , name )
-, mData(data)
-, rotX(0)
-, rotY(0)
-, down(false)
-, distance(100)
-{
-}
-*/
-
 GLview::GLview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPosition,wxDefaultSize,0,wxT("das"),wxNullPalette){
-
+    context = new wxGLContext(this);
 }
 GLview::~GLview()
 {
@@ -65,7 +54,7 @@ void GLview::OnRightUp(wxMouseEvent& e)
 
 void GLview::OnMotion(wxMouseEvent& e)
 {
-	if( down )
+	if(down)
 	{
 		float dx = lastx - e.m_x;
 		float dy = lasty - e.m_y;
@@ -75,7 +64,7 @@ void GLview::OnMotion(wxMouseEvent& e)
         
 		lastx = e.m_x;
 		lasty = e.m_y;
-        
+        cout << "motion" << rotX << " " << rotY << endl;
 		Invalidate();
 	}
 }
@@ -88,20 +77,21 @@ void GLview::Invalidate()
 void GLview::OnWheel(wxMouseEvent& e)
 {
 	const float move = (float)e.m_wheelRotation / e.m_wheelDelta;
-	distance -= move * 10;
+	distance -= move;
+    cout << "scroll " << distance << endl;
 	Invalidate();
 }
 
 
 void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
 {
-	//wxPaintDC dc(this);
-    
-#ifndef __WXMOTIF__
-	//if (!GetContext()) return;
-#endif
-    
-	//SetCurrent();
+    cout << "paint" << endl;
+    SetCurrent(*context);
+    wxPaintDC(this);
+    //renderer.viewportSize.x = (GLint)GetSize().x;
+    //renderer.viewportSize.y = (GLint)GetSize().y;
+    //renderer.draw(1);
+
 	// Init OpenGL once, but after SetCurrent
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
@@ -111,7 +101,7 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
 	glLoadIdentity();
 	int width = 0;
 	int height = 0;
-	//GetClientSize(&width, &height);
+	GetClientSize(&width, &height);
 	if(height==0) height = 1;
 	const double aspectRatio = (float) width / height;
 	const double fieldOfGLview = 45.0;
@@ -136,28 +126,18 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
     
 	/* clear color and depth buffers */
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-	//mData->render();
-    
+        
 	glFlush();
-	//SwapBuffers();
+	SwapBuffers();
 }
 
 void GLview::OnSize(wxSizeEvent& event)
 {
-	// this is also necessary to update the context on some platforms
-	//wxGLCanvas::OnSize(event);
-    
-	// set GL GLviewport (not called by wxGLCanvas::OnSize on all platforms...)
 	int w, h;
-	//GetClientSize(&w, &h);
-#ifndef __WXMOTIF__
-	//if (GetContext())
-#endif
-	{
-		//SetCurrent();
-		//glGLviewport(0, 0, (GLint) w, (GLint) h);
-	}
+	GetClientSize(&w, &h);
+    cout << "resize " << w << " " << h << endl;
+    SetCurrent(*context);
+    //glGLviewport(0, 0, (GLint) w, (GLint) h);
 }
 
 void GLview::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
