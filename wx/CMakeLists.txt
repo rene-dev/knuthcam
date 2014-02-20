@@ -8,7 +8,15 @@ include_directories(${GLM_INCLUDE_DIRS})
 
 find_library(DXFLIB dxflib REQUIRED)
 
-set(SRC_LIST main.cpp glview.cpp ../contour.cpp ../dxfparser.cpp ../easygl.cpp ../svg.cpp)
+set(SRC_LIST
+main.cpp
+glview.cpp glview.hpp
+../contour.cpp ../contour.hpp
+../dxfparser.cpp ../dxfparser.hpp
+../easygl.cpp ../easygl.hpp
+../svg.cpp ../svg.hpp
+../knuthcam.hpp
+)
 
 set(wxWidgets_CONFIGURATION mswu)
 find_package(wxWidgets COMPONENTS core base gl REQUIRED)
