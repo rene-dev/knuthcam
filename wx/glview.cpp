@@ -22,11 +22,10 @@ GLview::GLview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPositio
     DxfParser parser;
     down = false;
     
-    if(!parser.open("/Users/rene/dev/knuthcam/hase.dxf", renderer.d)){
+    if(!parser.open(SRCDIR"/../hase.dxf", renderer.d)){
         cout << "cannot open file" << endl;
     }
     renderer.init();
-    cout << "layers:" << renderer.d.layers.size() << endl;
 }
 GLview::~GLview()
 {
