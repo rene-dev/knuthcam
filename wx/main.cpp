@@ -31,7 +31,7 @@ bool Sim::OnInit()
     wxMenu *fileMenu = new wxMenu;
     menuBar->Append(fileMenu, "&File");
     fileMenu->Append(wxID_OPEN);
-    Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(Sim::OnOpen));
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &Sim::OnOpen, this, wxID_OPEN);
 
     wxMenu *viewMenu = new wxMenu;
     menuBar->Append(viewMenu, "View");
@@ -46,7 +46,7 @@ bool Sim::OnInit()
     wxMenu *helpMenu = new wxMenu;
     menuBar->Append(helpMenu, "&Help" );
     helpMenu->Append(wxID_ABOUT);
-    Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(Sim::OnAbout));
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &Sim::OnAbout, this, wxID_ABOUT);
 
     frame->SetMenuBar( menuBar );
 

@@ -60,7 +60,6 @@ void easygl::draw()
     // update camera
     //vec3 direction = rotate(orientation, vec3(0, 0, -1));
     //vec3 direction = rotate(quat(0,0,0,0), vec3(0, 0, -1));
-    cout << "draw:" << this << endl;
     position = vec3(5.0f, 5.0f, 5.0f) + (movement.z * direction + movement.x * right - movement.y * up);
     target = position + direction;
     modelview = lookAt(position, target, up);
@@ -208,28 +207,40 @@ void easygl::drawGrid()
 
 void easygl::viewz()
 {
-    //cout << __func__ << endl;
-    //position = vec3(5.0f, 5.0f, 5.0f);
-    cout << "view:" << this << endl;
-    //movement.z++;
+    movement = vec3(0,0,0);
+    up = vec3(0, 1, 0);
+    direction = vec3(0, 0, -1);
+	fieldOfView = 60.0f;
 }
 
 void easygl::viewz2()
 {
-    cout << __func__ << endl;
+    movement = vec3(0,0,0);
+    up = vec3(-1, 0, 0);
+    direction = vec3(0, 0, -1);
+	fieldOfView = 60.0f;
 }
 
 void easygl::viewx()
 {
-    cout << __func__ << endl;
+    movement = vec3(0,0,0);
+    up = vec3(0, 1, 0);
+    direction = vec3(1, 0, 0);
+	fieldOfView = 60.0f;
 }
 
 void easygl::viewy()
 {
-    cout << __func__ << endl;
+    movement = vec3(0,0,0);
+    up = vec3(0, 1, 0);
+    direction = vec3(0, 1, 0);
+	fieldOfView = 60.0f;
 }
 
 void easygl::viewp()
 {
-    cout << __func__ << endl;
+    movement = vec3(0,0,0);
+    up = vec3(0, 1, 0);
+    direction = vec3(0, 0, -1);
+	fieldOfView = 60.0f;
 }

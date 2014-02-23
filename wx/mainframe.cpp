@@ -43,12 +43,11 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     mainsplitter->SplitVertically(leftpanel, rightpanel,200);
     this->SetSizer(mainsizer);
     mainsizer->SetSizeHints(this);
-    
-    Connect(zviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarZ),glview);
-    Connect(z2viewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarZ2));
-    Connect(xviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarX));
-    Connect(yviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarY));
-    Connect(pviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarP));
+    Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarZ, glview, zviewID);
+    Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarZ2, glview, z2viewID);
+    Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarX, glview, xviewID);
+    Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarY, glview, yviewID);
+    Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarP, glview, pviewID);
 }
 
 //Constructor, sets up virtual report list with 3 columns
