@@ -16,11 +16,11 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     toolbar->SetToolBitmapSize(wxSize(24, 24));
     toolbar->AddTool(wxID_OPEN, wxT("open"),wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(24, 24)));
     toolbar->AddStretchableSpace();
-    toolbar->AddTool(wxID_OPEN, wxEmptyString,axiszbitmap);
-    toolbar->AddTool(wxID_OPEN, wxEmptyString,axisz2bitmap);
-    toolbar->AddTool(wxID_OPEN, wxEmptyString,axisxbitmap);
-    toolbar->AddTool(wxID_OPEN, wxEmptyString,axisybitmap);
-    toolbar->AddTool(wxID_OPEN, wxEmptyString,axispbitmap);
+    zviewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axiszbitmap)->GetId();
+    z2viewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axisz2bitmap)->GetId();
+    xviewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axisxbitmap)->GetId();
+    yviewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axisybitmap)->GetId();
+    pviewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axispbitmap)->GetId();
     toolbar->Realize();
     
     mainsplitter->SetSashGravity(0);
@@ -36,12 +36,19 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     //right
     wxPanel *rightpanel = new wxPanel(mainsplitter, wxID_ANY);
     wxBoxSizer *rightsizer = new wxBoxSizer(wxVERTICAL);
-    rightsizer->Add(new GLview(rightpanel), 1,wxEXPAND,0);
+    glview = new GLview(rightpanel);
+    rightsizer->Add(glview, 1,wxEXPAND,0);
     rightpanel->SetSizer(rightsizer);
     
     mainsplitter->SplitVertically(leftpanel, rightpanel,200);
     this->SetSizer(mainsizer);
     mainsizer->SetSizeHints(this);
+    
+    Connect(zviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarZ),glview);
+    Connect(z2viewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarZ2));
+    Connect(xviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarX));
+    Connect(yviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarY));
+    Connect(pviewID,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEventHandler(GLview::OnToolbarP));
 }
 
 //Constructor, sets up virtual report list with 3 columns

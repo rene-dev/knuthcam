@@ -13,7 +13,7 @@ public:
     ~GLview();
     
     wxGLContext* context;
-    easygl renderer;
+    easygl* renderer;
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
@@ -26,6 +26,11 @@ public:
 	void OnRightUp(wxMouseEvent& e);
 	void OnMotion(wxMouseEvent& e);
 	void OnWheel(wxMouseEvent& e);
+    void OnToolbarZ(wxCommandEvent& WXUNUSED(event));
+    void OnToolbarZ2(wxCommandEvent& WXUNUSED(event));
+    void OnToolbarX(wxCommandEvent& WXUNUSED(event));
+    void OnToolbarY(wxCommandEvent& WXUNUSED(event));
+    void OnToolbarP(wxCommandEvent& WXUNUSED(event));
     
 	void Invalidate();
 private:

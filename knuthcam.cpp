@@ -72,7 +72,7 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
     glfwMakeContextCurrent(window);
-    glfwSetKeyCallback(window, key_callback);
+//    glfwSetKeyCallback(window, key_callback);
     glfwSetScrollCallback(window, scroll_callback);
     glfwSetMouseButtonCallback(window,mousebutton_callback);
     glfwSetCursorPosCallback(window,mousepos_callback);

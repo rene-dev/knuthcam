@@ -10,6 +10,13 @@ class MainFrame : public wxFrame
 {
 public:
     MainFrame(const wxString& title);
+
+    int zviewID;
+    int z2viewID;
+    int xviewID;
+    int yviewID;
+    int pviewID;
+    GLview* glview;
 };
 
 class SearchResultsList: public wxListCtrl{

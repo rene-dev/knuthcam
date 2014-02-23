@@ -24,6 +24,7 @@ using glm::value_ptr;
 
 easygl::easygl()
 {
+    cout << "neu: " << this << endl;
 }
 
 easygl::~easygl()
@@ -59,6 +60,7 @@ void easygl::draw()
     // update camera
     //vec3 direction = rotate(orientation, vec3(0, 0, -1));
     //vec3 direction = rotate(quat(0,0,0,0), vec3(0, 0, -1));
+    cout << "draw:" << this << endl;
     position = vec3(5.0f, 5.0f, 5.0f) + (movement.z * direction + movement.x * right - movement.y * up);
     target = position + direction;
     modelview = lookAt(position, target, up);
@@ -202,4 +204,32 @@ void easygl::drawGrid()
         glVertex3f(2.5, 0, i); glVertex3f(-2.5, 0, i);
     }
     glEnd();
+}
+
+void easygl::viewz()
+{
+    //cout << __func__ << endl;
+    //position = vec3(5.0f, 5.0f, 5.0f);
+    cout << "view:" << this << endl;
+    //movement.z++;
+}
+
+void easygl::viewz2()
+{
+    cout << __func__ << endl;
+}
+
+void easygl::viewx()
+{
+    cout << __func__ << endl;
+}
+
+void easygl::viewy()
+{
+    cout << __func__ << endl;
+}
+
+void easygl::viewp()
+{
+    cout << __func__ << endl;
 }

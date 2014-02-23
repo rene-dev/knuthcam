@@ -59,7 +59,11 @@ public:
 	void draw();
     void scroll(double);
     void movemouse(double, double);
-
+    void viewz();
+    void viewz2();
+    void viewx();
+    void viewy();
+    void viewp();
 private:
     const float speed = 1.0f; // movement speed
 

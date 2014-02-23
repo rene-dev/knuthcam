@@ -20,26 +20,56 @@ END_EVENT_TABLE()
 GLview::GLview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPosition,wxDefaultSize,0,wxT("glview"),wxNullPalette){
     context = new wxGLContext(this);
     DxfParser parser;
-    
-    if(!parser.open(SRCDIR"/../hase.dxf", renderer.d)){
+    renderer = new easygl();
+    if(!parser.open(SRCDIR"/../hase.dxf", renderer->d)){
         cout << "cannot open file" << endl;
     }
-    renderer.init();
+    renderer->init();
 }
 GLview::~GLview()
 {
+}
+
+void GLview::OnToolbarZ(wxCommandEvent& WXUNUSED(event))
+{
+    renderer->viewz();
+    Invalidate();
+}
+
+void GLview::OnToolbarZ2(wxCommandEvent& WXUNUSED(event))
+{
+    renderer->viewz2();
+    Invalidate();
+}
+
+void GLview::OnToolbarX(wxCommandEvent& WXUNUSED(event))
+{
+    renderer->viewx();
+    Invalidate();
+}
+
+void GLview::OnToolbarY(wxCommandEvent& WXUNUSED(event))
+{
+    renderer->viewy();
+    Invalidate();
+}
+
+void GLview::OnToolbarP(wxCommandEvent& WXUNUSED(event))
+{
+    renderer->viewp();
+    Invalidate();
 }
 
 void GLview::OnLeftDown(wxMouseEvent& e)
 {
 	//lastx = e.m_x;
 	//lasty = e.m_y;
-	renderer.drag = true;
+	renderer->drag = true;
 }
 
 void GLview::OnLeftUp(wxMouseEvent& e)
 {
-	renderer.drag = false;
+	renderer->drag = false;
 }
 
 void GLview::OnMiddleDown(wxMouseEvent& e)
@@ -61,7 +91,7 @@ void GLview::OnRightUp(wxMouseEvent& e)
 void GLview::OnMotion(wxMouseEvent& e)
 {
     SetCurrent(*context);
-    renderer.movemouse(e.m_x, e.m_y);
+    renderer->movemouse(e.m_x, e.m_y);
     Invalidate();
 }
 
@@ -75,7 +105,7 @@ void GLview::OnWheel(wxMouseEvent& e)
 	const float move = (float)e.m_wheelRotation / e.m_wheelDelta;
 	//distance -= move;
     //cout << "scroll " << distance << endl;
-    renderer.scroll(move);
+    renderer->scroll(move);
 	Invalidate();
 }
 
@@ -85,8 +115,8 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
     //cout << "paint" << endl;
     SetCurrent(*context);
     wxPaintDC(this);
-    GetClientSize(&renderer.viewportSize.x, &renderer.viewportSize.y);
-    renderer.draw();
+    GetClientSize(&renderer->viewportSize.x, &renderer->viewportSize.y);
+    renderer->draw();
 	glFlush();
 	SwapBuffers();
 }

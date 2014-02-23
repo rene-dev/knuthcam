@@ -28,14 +28,24 @@ bool Sim::OnInit()
 {
     frame = new MainFrame(wxT("KnuthCAM"));
     wxMenuBar *menuBar = new wxMenuBar;
-    wxMenu *menuFile = new wxMenu;
-    menuBar->Append(menuFile, "&File");
-    menuFile->Append(wxID_OPEN);
+    wxMenu *fileMenu = new wxMenu;
+    menuBar->Append(fileMenu, "&File");
+    fileMenu->Append(wxID_OPEN);
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(Sim::OnOpen));
+
+    wxMenu *viewMenu = new wxMenu;
+    menuBar->Append(viewMenu, "View");
+    viewMenu->Append(frame->xviewID, _("&Right\tCTRL+1"));
+    viewMenu->Append(frame->yviewID, _("&Front\tCTRL+2"));
+    viewMenu->Append(frame->zviewID, _("&Top\tCTRL+3"));
+    viewMenu->Append(frame->z2viewID,_("&Top rotated\tCTRL+4"));
+    viewMenu->Append(frame->pviewID, _("&Perspective\tCTRL+5"));
+    viewMenu->AppendSeparator();
+    viewMenu->Append(wxID_ANY, _("&Orthogonal\tCTRL+6"),wxEmptyString,wxITEM_CHECK);
     
-    wxMenu *menuHelp = new wxMenu;
-    menuBar->Append(menuHelp, "&Help" );
-    menuHelp->Append(wxID_ABOUT);
+    wxMenu *helpMenu = new wxMenu;
+    menuBar->Append(helpMenu, "&Help" );
+    helpMenu->Append(wxID_ABOUT);
     Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(Sim::OnAbout));
 
     frame->SetMenuBar( menuBar );
