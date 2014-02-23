@@ -243,3 +243,13 @@ void easygl::viewp()
     direction = vec3(0, 0, -1);
 	fieldOfView = 60.0f;
 }
+
+void easygl::zoomin()
+{
+    scroll(2);
+}
+
+void easygl::zoomout()
+{
+    scroll(-2);
+}

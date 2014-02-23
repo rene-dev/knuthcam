@@ -64,6 +64,8 @@ public:
     void viewx();
     void viewy();
     void viewp();
+    void zoomin();
+    void zoomout();
 private:
     const float speed = 1.0f; // movement speed
 

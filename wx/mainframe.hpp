@@ -16,6 +16,8 @@ public:
     int xviewID;
     int yviewID;
     int pviewID;
+    int zoominID;
+    int zoomoutID;
     GLview* glview;
 };
 

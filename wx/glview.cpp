@@ -26,6 +26,7 @@ GLview::GLview(wxPanel *parent):wxGLCanvas(parent,wxID_ANY,NULL,wxDefaultPositio
 
 GLview::~GLview()
 {
+    delete context;
 }
 
 void GLview::OnToolbarZ(wxCommandEvent& WXUNUSED(event))
@@ -55,6 +56,18 @@ void GLview::OnToolbarY(wxCommandEvent& WXUNUSED(event))
 void GLview::OnToolbarP(wxCommandEvent& WXUNUSED(event))
 {
     renderer.viewp();
+    Invalidate();
+}
+
+void GLview::OnZoomIn(wxCommandEvent& WXUNUSED(event))
+{
+    renderer.zoomin();
+    Invalidate();
+}
+
+void GLview::OnZoomOut(wxCommandEvent& WXUNUSED(event))
+{
+    renderer.zoomout();
     Invalidate();
 }
 

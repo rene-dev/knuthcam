@@ -31,6 +31,8 @@ public:
     void OnToolbarX(wxCommandEvent& WXUNUSED(event));
     void OnToolbarY(wxCommandEvent& WXUNUSED(event));
     void OnToolbarP(wxCommandEvent& WXUNUSED(event));
+    void OnZoomIn(wxCommandEvent& WXUNUSED(event));
+    void OnZoomOut(wxCommandEvent& WXUNUSED(event));
     
 	void Invalidate();
 };

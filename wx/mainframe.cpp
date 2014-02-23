@@ -16,6 +16,9 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     toolbar->SetToolBitmapSize(wxSize(24, 24));
     toolbar->AddTool(wxID_OPEN, wxT("open"),wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(24, 24)));
     toolbar->AddStretchableSpace();
+    zoominID = toolbar->AddTool(wxID_ANY, wxT("Zoom In"),wxArtProvider::GetBitmap(wxART_PLUS, wxART_TOOLBAR, wxSize(24, 24)))->GetId();
+    zoomoutID = toolbar->AddTool(wxID_ANY, wxT("Zoom Out"),wxArtProvider::GetBitmap(wxART_MINUS, wxART_TOOLBAR, wxSize(24, 24)))->GetId();
+    toolbar->AddSeparator();
     zviewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axiszbitmap)->GetId();
     z2viewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axisz2bitmap)->GetId();
     xviewID = toolbar->AddTool(wxID_ANY, wxEmptyString,axisxbitmap)->GetId();
@@ -48,6 +51,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarX, glview, xviewID);
     Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarY, glview, yviewID);
     Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnToolbarP, glview, pviewID);
+    Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnZoomIn, glview, zoominID);
+    Bind(wxEVT_COMMAND_TOOL_CLICKED, &GLview::OnZoomOut, glview, zoomoutID);
 }
 
 //Constructor, sets up virtual report list with 3 columns
