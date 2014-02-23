@@ -24,7 +24,6 @@ using glm::value_ptr;
 
 easygl::easygl()
 {
-    cout << "neu: " << this << endl;
 }
 
 easygl::~easygl()

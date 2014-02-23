@@ -13,7 +13,7 @@ public:
     ~GLview();
     
     wxGLContext* context;
-    easygl* renderer;
+    easygl renderer;
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);
@@ -33,6 +33,4 @@ public:
     void OnToolbarP(wxCommandEvent& WXUNUSED(event));
     
 	void Invalidate();
-private:
-	DECLARE_EVENT_TABLE()
 };
