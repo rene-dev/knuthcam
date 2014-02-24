@@ -14,6 +14,7 @@ public:
     
     wxGLContext* context;
     easygl renderer;
+    wxStaticText* debugtext;
 	void OnPaint(wxPaintEvent& event);
 	void OnSize(wxSizeEvent& event);
 	void OnEraseBackground(wxEraseEvent& event);

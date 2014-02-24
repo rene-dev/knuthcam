@@ -45,7 +45,8 @@ public:
 	double fieldOfView;
 	double near, far;
 	double aspectRatio;
-    bool drag;
+    bool dragl;
+    bool dragr;
     glm::mat4 dragmodelview;
     GLfloat zbuf = 1;
     drawing d;

@@ -34,9 +34,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 static void mousebutton_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT)
-        renderer.drag = true;
+        renderer.dragl = true;
     else if (action == GLFW_RELEASE && button == GLFW_MOUSE_BUTTON_LEFT)
-        renderer.drag = false;
+        renderer.dragl = false;
 }
 
 static void mousepos_callback(GLFWwindow* window, double xpos, double ypos)

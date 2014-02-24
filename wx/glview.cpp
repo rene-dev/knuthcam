@@ -73,14 +73,12 @@ void GLview::OnZoomOut(wxCommandEvent& WXUNUSED(event))
 
 void GLview::OnLeftDown(wxMouseEvent& e)
 {
-	//lastx = e.m_x;
-	//lasty = e.m_y;
-	renderer.drag = true;
+	renderer.dragl = true;
 }
 
 void GLview::OnLeftUp(wxMouseEvent& e)
 {
-	renderer.drag = false;
+	renderer.dragl = false;
 }
 
 void GLview::OnMiddleDown(wxMouseEvent& e)
@@ -93,10 +91,12 @@ void GLview::OnMiddleUp(wxMouseEvent& e)
 
 void GLview::OnRightDown(wxMouseEvent& e)
 {
+    renderer.dragr = true;
 }
 
 void GLview::OnRightUp(wxMouseEvent& e)
 {
+    renderer.dragr = false;
 }
 
 void GLview::OnMotion(wxMouseEvent& e)
@@ -128,6 +128,7 @@ void GLview::OnPaint( wxPaintEvent& WXUNUSED(event) )
     wxPaintDC(this);
     GetClientSize(&renderer.viewportSize.x, &renderer.viewportSize.y);
     renderer.draw();
+    debugtext->SetLabel(glm::to_string(renderer.target));
 	glFlush();
 	SwapBuffers();
 }

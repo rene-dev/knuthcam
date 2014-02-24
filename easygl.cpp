@@ -44,7 +44,8 @@ void easygl::init()
 	fieldOfView = 60.0f;
 	near = 0.1f, far = 1000.0f;
 	aspectRatio = 1.0;
-    drag = false;
+    dragl = false;
+    dragr = false;
 
     //sphere.load("sphere.stl", vec4(1.0f, 0.0f, 1.0f, 1.0f));
     for(layer &l : d.layers){
@@ -138,7 +139,7 @@ void easygl::movemouse(double x, double y){
     vec3 screen=vec3(x,viewportSize.y - y,zbuf);
     vec3 pos= unProject(screen,dragmodelview,projection,vec4(0,0, viewportSize.x, viewportSize.y));
     glmouse = vec2(pos.x,pos.y);
-	if(drag && screen.z != 1)
+	if(dragl && screen.z != 1)
 	{
         vec2 gldiff = (gllastmouse - glmouse);
         movement -= glm::vec3(gldiff,0);

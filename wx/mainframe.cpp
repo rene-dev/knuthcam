@@ -1,6 +1,7 @@
 #include "mainframe.hpp"
 #include <wx/bitmap.h>
 #include <wx/artprov.h>
+#include <wx/stattext.h>
 
 MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *mainsizer = new wxBoxSizer(wxVERTICAL);
@@ -41,6 +42,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(NULL, wxID_ANY, title){
     wxBoxSizer *rightsizer = new wxBoxSizer(wxVERTICAL);
     glview = new GLview(rightpanel);
     rightsizer->Add(glview, 1,wxEXPAND,0);
+    glview->debugtext = new wxStaticText(rightpanel, wxID_ANY, _(""));
+    rightsizer->Add(glview->debugtext);
     rightpanel->SetSizer(rightsizer);
     
     mainsplitter->SplitVertically(leftpanel, rightpanel,200);
