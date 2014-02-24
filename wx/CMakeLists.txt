@@ -22,7 +22,7 @@ mainframe.cpp mainframe.hpp
 )
 
 set(wxWidgets_CONFIGURATION mswu)
-find_package(wxWidgets COMPONENTS core base gl REQUIRED)
+find_package(wxWidgets 3.0 COMPONENTS core base gl REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 if(APPLE)
