@@ -337,6 +337,8 @@ public:
     void offset(float r){
         std::vector<contur> newconts;
         for(contur c : conts){
+            if(c.ctype != contur::input)
+                continue;
             contur newcont;
             contur tmp;
             newcont.ctype = contur::toolpath;
