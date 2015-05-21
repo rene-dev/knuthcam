@@ -50,7 +50,7 @@ void easygl::init()
     //sphere.load("sphere.stl", vec4(1.0f, 0.0f, 1.0f, 1.0f));
     for(layer &l : d.layers){
         l.findcontours();
-        l.offset(-60);
+        l.offset(1);
         l.show();
     }
 }
