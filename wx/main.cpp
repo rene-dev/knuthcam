@@ -87,14 +87,14 @@ void Sim::OnOpen(wxCommandEvent& WXUNUSED(event)){
 
 void Sim::OnAbout(wxCommandEvent& WXUNUSED(event)){
     //wxMessageBox(wxT("KnuthCAM"),wxT("This is KnuthCAM"),wxOK|wxICON_INFORMATION);
-    wxAboutDialogInfo aboutInfo;
-    aboutInfo.SetName("KnuthCAM");
-    aboutInfo.SetVersion("git");
-    aboutInfo.SetDescription(_("KnuthCAM"));
-    aboutInfo.SetCopyright("(C) 2010-2014");
-    aboutInfo.SetWebSite("https://github.com/rene-dev/knuthcam");
-    aboutInfo.AddDeveloper("Crinq");
-    aboutInfo.AddDeveloper("Rene-dev");
-    aboutInfo.AddDeveloper("Ands");
-    wxAboutBox(aboutInfo);
+//    wxAboutDialogInfo aboutInfo;
+//    aboutInfo.SetName("KnuthCAM");
+//    aboutInfo.SetVersion("git");
+//    aboutInfo.SetDescription(_("KnuthCAM"));
+//    aboutInfo.SetCopyright("(C) 2010-2014");
+//    aboutInfo.SetWebSite("https://github.com/rene-dev/knuthcam");
+//    aboutInfo.AddDeveloper("Crinq");
+//    aboutInfo.AddDeveloper("Rene-dev");
+//    aboutInfo.AddDeveloper("Ands");
+//    wxAboutBox(aboutInfo);
 }

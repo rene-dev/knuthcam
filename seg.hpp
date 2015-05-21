@@ -4,6 +4,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include <glm/gtx/norm.hpp>
+#include <vector>
 //#include <string>
 #include <iostream>
 //#include "knuthcam.hpp"
@@ -81,6 +82,39 @@ public:
     void prev(seg_t* s){
         l[0] = s;
     }
+    
+    std::vector<glm::vec2> intersect(seg_t* a){
+        std::vector<glm::vec2> result;
+        switch(t){
+            case line:
+                switch(a->type()){
+                    case line:
+                        glm::vec2 res;
+                        float a1 = e.y - s.y;
+                        float b1 = s.x - e.x;
+                        float c1 = a1 * s.x + b1 * s.y;
+                        
+                        float a2 = a->end().y - a->start().y;
+                        float b2 = a->start().x - a->end().x;
+                        float c2 = a2 * a->start().x + b2 * a->start().y;
+                        
+                        float det = a1 * b2 - a2 * b1;
+                        if(fabs(det) < 1.0e-6){
+                        }
+                        else{ // TODO: on line?
+                            res.x = (b2 * c1 - b1 * c2) / det;
+                            res.y = (a1 * c2 - a2 * c1) / det;
+                            result.push_back(res);
+                        }
+                        
+                        
+                        
+                        
+                }
+        }
+        return(result);
+    }
+    
     virtual void show() = 0;
     virtual void reverse() = 0;
     virtual float length() = 0;
@@ -290,15 +324,24 @@ public:
         if(fabsf(glm::length(e-m)) > (t == cw ? -r : r)){
             newseg = new seg_arc(t == seg_t::cw, start, m, end);
         }
-        else if(fabsf(glm::length(e-m)) < (t == cw ? -r : r)){
-            seg_t* t1 = new seg_line(start, this->mid());
-            seg_t* t2 = new seg_line(this->mid(), end);
-            t1->link(1, t2);
-            t1->link(0, t2);
-            t2->link(1, t1);
-            t2->link(0, t1);
-            newseg = t1;//new seg_line(start, end);
-        }
+//        else {
+//            this->next()->link(0, this->prev());
+//            this->prev()->link(1, this->next());
+//        }
+        
+        
+        
+        
+//        if(fabsf(glm::length(e-m)) < (t == cw ? -r : r)){
+//            seg_t* t1 = new seg_line(start, this->mid());
+//            seg_t* t2 = new seg_line(this->mid(), end);
+//            t1->link(1, t2);
+//            t1->link(0, t2);
+//            t2->link(1, t1);
+//            t2->link(0, t1);
+//            
+//            //newseg = t1;//new seg_line(start, end);
+//        }
         return(newseg);
     }
     

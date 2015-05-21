@@ -9,6 +9,16 @@
 #include <vector>
 #include "seg.hpp"
 
+/*
+ TODO:
+ intersection line line arc
+ isonsegment
+ hpp->cpp
+ inside offset motorhalter r = -80
+ 
+ */
+
+
 typedef struct{
     float r;
     enum{
@@ -252,26 +262,6 @@ public:
         return(false);
     }
     
-    seg_t* join(float r){
-        seg_t* s = 0;
-        if(!seg_t::near(curr()->offset_end(r), next()->offset_start(r))){
-            if((angle() > 0.0f && r > 0) || (angle() < -0.0f && r < 0)){
-                seg_line* l1 = new seg_line(curr()->offset_end(r), curr()->end());
-                seg_line* l2 = new seg_line(curr()->end(), next()->offset_start(r));
-                l1->link(!next_seg, l2);
-                l1->link(next_seg, l2);
-                l2->link(!next_seg, l1);
-                l2->link(next_seg, l1);
-                s = l1;
-            }
-            else{
-                seg_arc* a = new seg_arc(r >= 0, curr()->offset_end(r), curr()->end(), next()->offset_start(r));
-                s = a;
-            }
-        }
-        return(s);
-    };
-    
     bool closed(){
         seg_t* begin = curr();
         if(size()){
@@ -348,15 +338,51 @@ public:
         std::vector<contur> newconts;
         for(contur c : conts){
             contur newcont;
+            contur tmp;
             newcont.ctype = contur::toolpath;
             seg_t* begin = c.curr();
             do{
                 newcont << c.offset(r);
-                newcont << c.join(r);
+                //newcont << c.join(r);
                 
             }while(c.step() != begin);
+            
+            begin = newcont.curr();
+            
+            do{
+                if(!seg_t::near(newcont.curr()->end(), newcont.curr()->next()->start())){
+                    if((newcont.angle() > 0.0f && r > 0) || (newcont.angle() < -0.0f && r < 0)){
+                        std::vector<glm::vec2> i = newcont.curr()->intersect(newcont.curr()->next());
+                        if(!i.empty()){
+                            newcont.curr()->end(i[0]);
+                            newcont.curr()->next()->start(i[0]);
+                        }
+                        else if(newcont.curr()->type() == seg_t::line && newcont.curr()->next()->type() == seg_t::line){
+                            std::cout << "no intersect" << std::endl;
+                        }
+                        //seg_line* l1 = new seg_line(curr()->offset_end(r), curr()->end());
+                        //seg_line* l2 = new seg_line(curr()->end(), next()->offset_start(r));
+                        //l1->link(!next_seg, l2);
+                        //l1->link(next_seg, l2);
+                        //l2->link(!next_seg, l1);
+                        //l2->link(next_seg, l1);
+                        //s = l1;
+                    }
+                    else{
+                        seg_arc* a = new seg_arc(r >= 0, newcont.curr()->end(), newcont.curr()->offset_end(-r), newcont.curr()->next()->start());
+                        newcont.insert(a);
+                        //newcont.step();
+                        
+                        //newcont << a;
+                        std::cout << "new arc" << std::endl;
+                    }
+                }
+            }while(newcont.step() != begin);
+
             newconts.push_back(newcont);
         }
+
+        
         for(contur c : newconts){
             conts.push_back(c);
         }
